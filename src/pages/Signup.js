@@ -10,14 +10,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function SignUp() {
-  // const auth = getAuth(app);
-  // const db = getFirestore(app);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [status, setStatus] = useState("");
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
   const navigate = useNavigate();
 
@@ -32,7 +29,6 @@ function SignUp() {
           Name: name,
           Email: user.email,
           PhoneNum: phone,
-          Status: status,
         });
       }
       console.log("User Registered Successfully!!");
@@ -130,41 +126,7 @@ function SignUp() {
                 />
                 <i className="bx bx-hide eye-icon"></i>
               </div>
-              <div>
-                <a style={{ fontSize: '14px' }}>Please select your role from the following options:</a>
-              </div>
-              <div className="field radio-field">
-                <label>
-                  <input 
-                    type="radio" 
-                    name="status"  // All radio buttons share the same name
-                    value="Agent" 
-                    onChange={(e) => setStatus(e.target.value)} 
-                    required
-                  />
-                  Agent
-                </label>
-                <label>
-                  <input 
-                    type="radio" 
-                    name="status"  
-                    value="Tenant" 
-                    onChange={(e) => setStatus(e.target.value)} 
-                    required
-                  />
-                  Tenant
-                </label>
-                <label>
-                  <input 
-                    type="radio" 
-                    name="status"  
-                    value="Landlord" 
-                    onChange={(e) => setStatus(e.target.value)} 
-                    required
-                  />
-                  Landlord
-                </label>
-              </div>
+        
               <div className="field button-field">
                 <button type="submit" className="pageButton">Signup</button>
                 <ToastContainer />

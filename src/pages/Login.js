@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../Firebase"; 
-// import './Login&Signup&Reset.css';
+import './Login&Signup&Reset.css';
 import googleLogo from '../assets/img/googleIcon.png';
 import { Link } from "react-router-dom";
 import { ToastContainer,toast } from "react-toastify";
