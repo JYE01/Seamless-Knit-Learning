@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { createUserWithEmailAndPassword} from "firebase/auth";
 import { auth, db } from "../Firebase"; 
-import {setDoc, doc} from "firebase/firestore";
-import './Login&Signup&Reset.css';
+import {setDoc, getDoc, doc} from "firebase/firestore";
+import './Login&Signup.css';
 import googleLogo from '../assets/img/googleIcon.png'
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -15,65 +15,65 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+  const [code, setCode] = useState("");
   const navigate = useNavigate();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      const user = auth.currentUser;
-      console.log(user);
-      if (user) {
-        await setDoc(doc(db, "Users", user.uid), {
-          Name: name,
-          Email: user.email,
-          PhoneNum: phone,
+      e.preventDefault();
+      try {
+        const accessCodeDoc = await getDoc(doc(db, "AccessCode", "240907"));
+        if (accessCodeDoc.exists()) {
+          const firebaseAccessCode = accessCodeDoc.data().code;  // Retrieve the access code from Firestore
+          if (code != firebaseAccessCode) {
+            toast.error("Invalid access code!", {
+              position: "top-center",
+            });
+            return;
+          }
+        } else {
+          toast.error("Access code not found!", {
+            position: "top-center",
+          });
+          return;
+        }
+    
+        // Proceed with user signup if access code matches
+        await createUserWithEmailAndPassword(auth, email, password);
+        const user = auth.currentUser;
+        console.log(user);
+        if (user) {
+          await setDoc(doc(db, "Users", user.uid), {
+            Name: name,
+            Email: user.email,
+            PhoneNum: phone,
+          });
+        }
+    
+        console.log("User Registered Successfully!!");
+        toast.success("Sign Up Account Successfully!", {
+          position: "top-center",
+          autoClose: 3000,
+          onClose: () => navigate("/Login")
         });
-      }
-      console.log("User Registered Successfully!!");
-      toast.success("Sign Up Accounct Successfully!", {
-        position: "top-center",
-        autoClose: 5000,
-        onClose: () => navigate("/Login")
-      });
-    } catch (error) {
-      console.log(error.message);
-      toast.error("The user has already registered!", {
-        position: "top-center",
-      });
-    }
-  };
-
-  const LoginWithGoogle = async () => {
-    if (isGoogleSigningIn) return; // Prevent multiple popup requests
-    setIsGoogleSigningIn(true); // Set flag to indicate the request is in progress
-
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      console.log(result);
-      if (result.user) {
-        toast.success("Logged in successfully!", {
+    
+      } catch (error) {
+        console.log(error.message);
+        toast.error("The user has already registered or an error occurred!", {
           position: "top-center",
         });
-        window.location.href = "/";
       }
-    } catch (error) {
-      console.error(error.message);
-      toast.error(error.message, {
-        position: "top-center",
-      });
-    } finally {
-      setIsGoogleSigningIn(false); // Reset flag after the request is completed
-    }
-  };
+    };
+
+    const togglePasswordVisibility = () => {
+      setIsPasswordVisible(!isPasswordVisible);
+    };
 
   return (
     <div
       style={{
         height: "100vh",
-        backgroundColor: "#4070f4",
+        backgroundColor: "#EEEEEE",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -83,7 +83,7 @@ function SignUp() {
         <div className="form-forms">
           <Link to="/">{'<Back'}</Link>
           <div className="form-content">
-            <header>Signup</header>
+            <header>Sign up</header>
             <form onSubmit={handleSignUp}>
               <div className="field input-field">
                 <input
@@ -107,13 +107,17 @@ function SignUp() {
               </div>
               <div className="field input-field">
                 <input
-                  type="password"
+                  type={isPasswordVisible ? "text" : "password"}
                   placeholder="Create password"
                   className="input"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <i
+                className={`bx ${isPasswordVisible ? "bx-show" : "bx-hide"} eye-icon`}
+                onClick={togglePasswordVisibility}
+                ></i>
               </div>
               <div className="field input-field">
                 <input
@@ -124,9 +128,17 @@ function SignUp() {
                   onChange={(e) => setPhone(e.target.value)}
                   required
                 />
-                <i className="bx bx-hide eye-icon"></i>
               </div>
-        
+              <div className="field input-field">
+                <input
+                  type="code"
+                  placeholder="Access Code"
+                  className="input"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  required
+                />
+              </div>
               <div className="field button-field">
                 <button type="submit" className="pageButton">Signup</button>
                 <ToastContainer />
@@ -143,14 +155,12 @@ function SignUp() {
           </div>
           <div className="line"></div>
           <div className="media-options">
-            <button
-              className="field google pageButton"
-              onClick={LoginWithGoogle}
-              disabled={isGoogleSigningIn}
-            >
-              <img src={googleLogo} alt="Google Icon" className="google-img" />
-              <span>Login with Google</span>
-            </button>
+           <Link to="/GoogleSignUp">
+             <button className="field google pageButton">
+               <img src={googleLogo} alt="Google Icon" className="google-img" />
+               <span>Sign up with Google</span>
+             </button>
+            </Link>
          </div>
       </div>
      </div>

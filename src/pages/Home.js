@@ -8,14 +8,15 @@ const Home = () => {
     <div className="landing-page">
       {/* Introduction Section */}
       <section className="intro-section">
-        <h1>Landing template for startups</h1>
-        <p>
-          Our landing page template works on all devices, so you only have to set it up once,
-          and get beautiful results forever.
+        <h1>Welcome to the world of knitting</h1>
+        <p>This is the learning platform for UTS student and alumni.</p>
+        <p>  
+           From this platform you are expected to dive into the world of knitting.
         </p>
         <div className="cta-buttons">
-          <button className="btn-primary">Start free trial</button>
-          <button className="btn-secondary">Learn more</button>
+          <Link to="/Login">
+            <button className="btn-primary">Get Started</button>
+          </Link>
         </div>
       </section>
 
@@ -25,7 +26,7 @@ const Home = () => {
         <p>Learn the basics of knitting with this comprehensive video guide.</p>
         <div className="youtube-video">
           <iframe 
-            src="https://www.youtube.com/embed/cCQK6odf9b0?list=PL2xysx6ZqtD-7jZz3R_DpH_yhyKJwIwVV" 
+            src="https://www.youtube.com/embed/BI7O6W_DGd0"
             title="YouTube video player" 
             frameBorder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

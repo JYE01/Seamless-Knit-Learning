@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../Firebase"; 
-import './Login&Signup&Reset.css';
+import './Login&Signup.css';
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,7 +30,7 @@ function Reset() {
     <div
       style={{
         height: "100vh",
-        backgroundColor: "#4070f4", 
+        backgroundColor: "#EEEEEE", 
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

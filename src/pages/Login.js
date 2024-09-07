@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "../Firebase"; 
-import './Login&Signup&Reset.css';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, fetchSignInMethodsForEmail } from "firebase/auth";
+import { auth, db } from "../Firebase"; 
+import { doc, getDoc } from "firebase/firestore";
+import './Login&Signup.css';
 import googleLogo from '../assets/img/googleIcon.png';
 import { Link } from "react-router-dom";
 import { ToastContainer,toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 function LogIn() {
-  // const auth = getAuth(app);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
 
   const handleLogIn = async (e) => {
@@ -22,44 +22,70 @@ function LogIn() {
       toast.success("Logged in successfully!", {
         position: "top-center",
       });
-      window.location.href = "/";
+      window.location.href = "/Dashboard";
     } catch (error) {
       console.log(error.message);
-      toast.error("Invalid emaill or password", {
+      toast.error("Invalid email or password", {
         position: "top-center",
       });
     }
   };
 
   const LoginWithGoogle = async () => {
-    if (isGoogleSigningIn) return; // Prevent multiple popup requests
-    setIsGoogleSigningIn(true); // Set flag to indicate the request is in progress
-
+    if (isGoogleSigningIn) return;
+    setIsGoogleSigningIn(true);
+  
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
-      if (result.user) {
-        toast.success("Logged in successfully!", {
+      const user = result.user;
+      const googleEmail = user.email;
+  
+      // Fetch the user from Firestore by email
+      const usersRef = doc(db, "Users", user.uid);
+      const userDoc = await getDoc(usersRef);
+  
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+  
+        if (userData.Email == googleEmail) {
+          console.log("User found in Firestore, logging in...");
+          toast.success("Logged in successfully with Google!", {
+            position: "top-center",
+          });
+          window.location.href = "/Dashboard";
+        } else {
+          console.log("No matching email in Firestore");
+          toast.error("Google account isn't sign up!", {
+            position: "top-center",
+          });
+        }
+      } else {
+        // User document does not exist in Firestore
+        console.log("No user document found in Firestore");
+        toast.error("Google account isn't sign up!", {
           position: "top-center",
         });
-        window.location.href = "/";
       }
     } catch (error) {
-      console.error(error.message);
-      toast.error("Invalid emaill or password!", {
+      console.error("Error during Google login:", error.message);
+      toast.error("Error occurred during login!", {
         position: "top-center",
       });
     } finally {
-      setIsGoogleSigningIn(false); // Reset flag after the request is completed
+      setIsGoogleSigningIn(false); // Reset the sign-in state
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
   };
 
   return (
     <div
       style={{
         height: "100vh",
-        backgroundColor: "#4070f4",
+        backgroundColor: "#EEEEEE",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -82,14 +108,17 @@ function LogIn() {
             </div>
             <div className="field input-field">
               <input
-                type="password"
+                type={isPasswordVisible ? "text" : "password"}
                 placeholder="Password"
                 className="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <i className="bx bx-hide eye-icon"></i>
+              <i
+                className={`bx ${isPasswordVisible ? "bx-show" : "bx-hide"} eye-icon`}
+                onClick={togglePasswordVisibility}
+              ></i>
             </div>
             <div className="form-link">
               <Link to="/Reset" className="forgot-pass">Forgot password?</Link>

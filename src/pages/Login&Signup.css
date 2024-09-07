@@ -180,3 +180,11 @@ button:hover {
     margin-right: 5px;
 }
 
+.eye-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+  }
