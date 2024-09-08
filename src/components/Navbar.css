@@ -1,0 +1,8 @@
+.navbar-link {
+    color: #4070f4;
+    text-decoration: none;
+}
+
+.navbar-link:hover {
+    text-decoration: underline;
+}

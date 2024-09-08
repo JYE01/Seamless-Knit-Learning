@@ -28,7 +28,6 @@ const Home = () => {
           <iframe 
             src="https://www.youtube.com/embed/BI7O6W_DGd0"
             title="YouTube video player" 
-            frameBorder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowFullScreen
           ></iframe>

@@ -1,6 +1,19 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+import './Navbar.css'
 
 const Navbar = () => {
+  const [studentName, setStudentName] = useState("");
+  const [studentEmail, setStudentEmail] = useState("");
+
+  // Retrieve the values from localStorage when the component mounts
+  useEffect(() => {
+    const name = localStorage.getItem("studentName");
+    const email = localStorage.getItem("studentEmail");
+    setStudentName(name);
+    setStudentEmail(email);
+  }, []);
+
   return (
     <div className="w-1/5 bg-white p-6 border-r space-y-8">
         <div className="mb-8">
@@ -22,12 +35,14 @@ const Navbar = () => {
           <ul className="space-y-3">
             <li className="text-gray-700 cursor-pointer">Help</li>
             <li className="text-gray-700 cursor-pointer">Settings</li>
+            <Link to="/Login" className="navbar-link">
             <li className="text-gray-700 cursor-pointer">Log out</li>
+            </Link>
           </ul>
         </nav>
         <div className="absolute bottom-10 left-6">
-          <p className="font-semibold">{'<Student Name>'}</p>
-          <p className="text-sm text-gray-500">student@student.uts.edu.au</p>
+          <p className="font-semibold">{studentName}</p>
+          <p className="text-sm text-gray-500">{studentEmail}</p>
         </div>
       </div>
   )

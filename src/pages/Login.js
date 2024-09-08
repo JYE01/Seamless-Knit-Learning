@@ -18,7 +18,13 @@ function LogIn() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      const user = auth.currentUser;
+      const studentDoc = await getDoc(doc(db, "Users", user.uid));
+      const studentData = studentDoc.data();
+      const studentName = studentData.Name;
       console.log("User logged in successfully");
+      localStorage.setItem("studentName", studentName);
+      localStorage.setItem("studentEmail", email);
       toast.success("Logged in successfully!", {
         position: "top-center",
       });
@@ -42,8 +48,11 @@ function LogIn() {
       const googleEmail = user.email;
   
       // Fetch the user from Firestore by email
-      const usersRef = doc(db, "Users", user.uid);
-      const userDoc = await getDoc(usersRef);
+      const userDoc = await getDoc(doc(db, "Users", user.uid));
+      const userData = userDoc.data();
+      const userName = userData.Name;
+      localStorage.setItem("studentName", userName);
+      localStorage.setItem("studentEmail", googleEmail);
   
       if (userDoc.exists()) {
         const userData = userDoc.data();
