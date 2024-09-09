@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import './Navbar.css'
+import './Navbar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Navbar = () => {
@@ -21,9 +21,7 @@ const Navbar = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
-
   return (
-    
     <div className="w-1/5 bg-white p-6 border-r space-y-8">
       <div className="relative account">
         <button onClick={toggleDropdown} className="flex items-center gap-2">
@@ -48,22 +46,41 @@ const Navbar = () => {
           </div>
         )}
       </div>
-        <div className="mb-8">
-          <p className="text-lg font-semibold">UTS</p>
-          <p className="text-sm text-gray-500">Faculty of Design</p>
-        </div>
-        <nav>
-          <p className="font-semibold text-gray-700 mb-4">OVERVIEW</p>
-          <ul className="space-y-3">
-            <li className="text-gray-700 cursor-pointer">Dashboard</li>
-            <li className="text-gray-700 cursor-pointer">Courses</li>
-            <li className="text-gray-700 cursor-pointer">Discussion</li>
-            <li className="text-gray-700 cursor-pointer">Calendar</li>
-            <li className="text-gray-700 cursor-pointer">Search</li>
-          </ul>
-        </nav>
-      </div>
-  )
-}
 
-export default Navbar
+      <div className="mb-8">
+        <p className="text-lg font-semibold">UTS</p>
+        <p className="text-sm text-gray-500">Faculty of Design</p>
+      </div>
+
+      {/* Increase Font Size for Sidebar Links */}
+      <nav>
+        <p className="font-semibold text-gray-700 mb-4 text-lg">OVERVIEW</p>
+        <ul className="space-y-6">
+          <li>
+            <Link to="/Main/Dashboard" className="block text-gray-700 cursor-pointer text-lg">
+              Dashboard
+            </Link>
+          </li>
+          <li>
+            <Link to="/Main/Quizzes" className="block text-gray-700 cursor-pointer text-lg">
+              Quizzes
+            </Link>
+          </li>
+          <li>
+            <Link to="/Main/Discussion" className="block text-gray-700 cursor-pointer text-lg">
+              Discussion
+            </Link>
+          </li>
+          <li>
+            <Link to="/Main/Calendar" className="block text-gray-700 cursor-pointer text-lg">
+              Calendar
+            </Link>
+          </li>
+          <li className="text-gray-700 cursor-pointer text-lg">Search</li>
+        </ul>
+      </nav>
+    </div>
+  );
+};
+
+export default Navbar;

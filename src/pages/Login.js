@@ -28,7 +28,7 @@ function LogIn() {
       toast.success("Logged in successfully!", {
         position: "top-center",
       });
-      window.location.href = "/Dashboard";
+      window.location.href = "/Main/Dashboard";
     } catch (error) {
       console.log(error.message);
       toast.error("Invalid email or password", {
@@ -62,7 +62,7 @@ function LogIn() {
           toast.success("Logged in successfully with Google!", {
             position: "top-center",
           });
-          window.location.href = "/Dashboard";
+          window.location.href = "/Main/Dashboard";
         } else {
           console.log("No matching email in Firestore");
           toast.error("Google account isn't sign up!", {
