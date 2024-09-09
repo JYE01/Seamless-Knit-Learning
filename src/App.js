@@ -6,6 +6,9 @@ import Signup from './pages/Signup'
 import Reset from "./pages/Reset";
 import GoogleSignUp from "./pages/GoogleSignUp";
 import { Routes, Route } from "react-router-dom";
+import Discussion from './components/Discussion';
+import Calendar from './components/Calender';
+import Courses from './components/Courses';
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
            <Route path="/Reset" element={<Reset />} />
            <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
            <Route path="/Dashboard" element={<Dashboard />} />
+           <Route path="/Courses" element={<Courses />} />
+           <Route path="/Calendar" element={<Calendar />} />
+           <Route path="/Discussion" element={<Discussion />} />
       </Routes>
     </>
   );

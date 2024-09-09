@@ -37,7 +37,7 @@ const Module = () => {
               <h2 className="text-lg font-semibold mb-3">{module.name}</h2>
               <button
                 onClick={() => toggleModule(index)}
-                className="bg-blue-500 text-white px-3 py-1 rounded"
+                className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
               >
                 {openModules[index] ? 'Hide All' : 'Show All'}
               </button>
@@ -58,7 +58,7 @@ const Module = () => {
                 {module.subtopics ? (
                   <ul className="space-y-2 pl-4">
                     {module.subtopics.map((subtopic, subIndex) => (
-                      <li key={subIndex} className="text-gray-700">
+                      <li key={subIndex} className="text-gray-700 text-sm">
                         <i className="mr-2">📄</i> {subtopic}
                       </li>
                     ))}
