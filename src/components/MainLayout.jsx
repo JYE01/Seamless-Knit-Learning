@@ -9,7 +9,7 @@ const MainLayout = () => {
       <Navbar />
 
       {/* Main Content */}
-      <div className="w-4/5 p-10">
+      <div className="w-5/6 p-10">
         <Outlet /> {/* This will render the current page content */}
       </div>
     </div>

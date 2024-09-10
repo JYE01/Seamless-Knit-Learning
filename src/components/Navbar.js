@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import './Navbar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -7,6 +7,8 @@ const Navbar = () => {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const location = useLocation(); // To track the current route
 
   useEffect(() => {
     const name = localStorage.getItem("studentName");
@@ -21,8 +23,16 @@ const Navbar = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
+  const menuItems = [
+    { name: "Dashboard", path: "/Main/Dashboard" },
+    { name: "Quizzes", path: "/Main/Quizzes" },
+    { name: "Discussion", path: "/Main/Discussion" },
+    { name: "Calendar", path: "/Main/Calendar" },
+    { name: "Search", path: "#" } // Change this path as needed
+  ];
+
   return (
-    <div className="w-1/5 bg-white p-6 border-r space-y-8">
+    <div className="w-1/6 bg-white p-6 border-r space-y-8">
       <div className="relative account">
         <button onClick={toggleDropdown} className="flex items-center gap-2">
           <i className="fas fa-user-circle text-5xl"></i>
@@ -52,7 +62,25 @@ const Navbar = () => {
         <p className="text-sm text-gray-500">Faculty of Design</p>
       </div>
 
-      {/* Increase Font Size for Sidebar Links */}
+      {/* Sidebar Links */}
+      {/* <nav>
+        <p className="font-semibold text-gray-700 mb-4 text-lg">OVERVIEW</p>
+        <ul className="space-y-6">
+          {menuItems.map((item, index) => (
+            <li key={index}>
+              <Link
+                to={item.path}
+                className={`block text-lg cursor-pointer py-2 px-4 rounded-lg 
+                  ${location.pathname === item.path ? 'bg-blue-500 text-white' : 'text-gray-700'}
+                  hover:bg-blue-200`}
+                onClick={() => setActiveIndex(index)}
+              >
+                {item.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav> */}
       <nav>
         <p className="font-semibold text-gray-700 mb-4 text-lg">OVERVIEW</p>
         <ul className="space-y-6">
