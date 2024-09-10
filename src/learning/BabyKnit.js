@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "../Firebase"
+import { Link } from 'react-router-dom';
 
 const BabyKnit = () => {
   const storage = getStorage(app);
@@ -236,6 +237,14 @@ const BabyKnit = () => {
           <li>Experiment with patterns and colorwork to create unique, personalized items.</li>
         </ul>
       </section>
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/OtherGarments">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/PatternKnit">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 };

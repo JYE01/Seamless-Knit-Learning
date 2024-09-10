@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ProbKnit = () => {
   return (
@@ -83,6 +84,14 @@ const ProbKnit = () => {
           <li>Learn to troubleshoot common issues like stuck carriages or loops in gate pegs through experience and careful handling.</li>
         </ul>
       </section>
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/PatternKnit">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/ExamplePattern">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 };

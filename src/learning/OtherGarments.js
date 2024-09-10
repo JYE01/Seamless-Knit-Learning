@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "../Firebase"
+import { Link } from 'react-router-dom';
 
 const OtherGarment = () => {
   const storage = getStorage(app);
@@ -157,6 +158,14 @@ const OtherGarment = () => {
           Cast on half a head width and knit 10 - 12 cm for the neck. Begin rounding the face edge with shortened rows. Then cast on new stitches for the top of the head and knit the height of the head minus 2 - 3 cm. Sew the back of the cap, and you may knit a rib border around the face opening.
         </p>
       </section>
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/Mounting">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/BabyKnit">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "../Firebase"
+import { Link } from 'react-router-dom';
 
 const Garment = () => {
   const storage = getStorage(app);
@@ -283,6 +284,14 @@ const Garment = () => {
           of function to create a pleated effect, experimenting with stitch sizes and spacing to suit your chosen yarn.
         </p>
       </section>
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/Edges">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/Mounting">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 };

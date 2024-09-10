@@ -24,6 +24,7 @@ const Module = () => {
       "/Main/BabyKnit",
       "/Main/PatternKnit",
       "/Main/ProbKnit",
+      "/Main/ExamplePattern",
     ]
 
     useEffect(() => {

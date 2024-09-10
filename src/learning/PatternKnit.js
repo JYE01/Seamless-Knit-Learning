@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const PatternKnit= () => {
   return (
@@ -119,6 +120,14 @@ const PatternKnit= () => {
         Method 1 is most feasible if the ribber has a button that can be set so that every other needle is
         taken when going outward and the opposite every other needle is taken when going homeward.
       </p>
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/BabyKnit">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/ProbKnit">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 }

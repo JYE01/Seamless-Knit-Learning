@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "../Firebase"
+import { Link } from 'react-router-dom';
 
 const KnitToMeasure = () => {
   const storage = getStorage(app);
@@ -198,6 +199,14 @@ const KnitToMeasure = () => {
           Always double-check your row counter and make careful notes as you knit. This will help ensure that both sides of the garment match perfectly when assembling the final product.
         </p>
       </section>
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/KnitSample">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/Edges">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 };

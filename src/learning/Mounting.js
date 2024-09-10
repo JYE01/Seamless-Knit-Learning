@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "../Firebase"
+import { Link } from 'react-router-dom';
 
 const Mounting = () => {
   const storage = getStorage(app);
@@ -217,7 +218,14 @@ const Mounting = () => {
           If several stitches next to each other have been dropped, then it is more difficult to get a nice result. When you crochet up the first stitch, then put a safety pin into the other stitches. Usually, the loops will have small curves of thread if they have been knit and have been dropped afterwards. Use only what corresponds to the length of such a curve for every stitch, then the yarn will become distributed evenly. If you have not yet come very far in the knitting, you may pay better off to discard the knitting and start anew.
         </p>
       </section>
-
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/Garment">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/OtherGarments">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const KnittingSample = () => {
   return (
@@ -158,6 +159,14 @@ const KnittingSample = () => {
           ensures that the slant follows the correct angle without distorting the fabric.
         </p>
       </section>
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/IntroToKnit">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/KnitToMeasure">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 };

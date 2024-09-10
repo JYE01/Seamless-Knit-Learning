@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "../Firebase"
+import { Link } from 'react-router-dom';
 
 const Edges = () => {
   const storage = getStorage(app);
@@ -148,6 +149,14 @@ const Edges = () => {
           For rib knitted collars, cast on half the number of stitches required for the neck, knitting straight up until the collar reaches the desired width. You can transfer stitches to the back needle bed and use a lace carriage or manually adjust them. Knit one or two rows before casting off.
         </p>
       </section>
+      <div className="flex justify-between mt-6">
+          <Link to="/Main/KnitToMeasure">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Back</button>
+          </Link>
+          <Link to="/Main/Garment">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+          </Link>
+      </div>
     </div>
   );
 };

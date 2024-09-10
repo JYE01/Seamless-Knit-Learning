@@ -21,6 +21,7 @@ import OtherGarments from './learning/OtherGarments';
 import BabyKnit from './learning/BabyKnit';
 import PatternKnit from './learning/PatternKnit';
 import ProbKnit from './learning/ProbKnit';
+import ExamplePattern from './learning/ExamplePattern'; 
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
               <Route path="/Main/BabyKnit" element={<BabyKnit />} />
               <Route path="/Main/PatternKnit" element={<PatternKnit />} />
               <Route path="/Main/ProbKnit" element={<ProbKnit />} />
+              <Route path="/Main/ExamplePattern" element={<ExamplePattern />} />
             </Route> 
       </Routes>
     </>
