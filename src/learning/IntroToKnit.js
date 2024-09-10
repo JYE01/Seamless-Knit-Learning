@@ -1,6 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import app from "../Firebase"
 
 const IntroToKnit = () => {
+  const storage = getStorage(app);
+  const [imageUrl, setImageUrl] = useState("");
+  
+  useEffect(() => {
+    const storageRef = ref(storage,  'gs://seamless-knitting.appspot.com/Module/MachineKnittingKnittax.jpg');
+    getDownloadURL(storageRef)
+    .then((url) => {
+      setImageUrl(url);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+  
   return (
     <div className="w-full h-full overflow-y-scroll p-8 bg-white text-gray-900">
         <h1 className="text-4xl font-bold mb-6">Introduction to Machine Knitting</h1>
@@ -21,9 +37,13 @@ const IntroToKnit = () => {
         </section>
 
         {/* Insert the image between the first two sections */}
-        {/* <div className="my-8 flex justify-center">
-          <img src={machineImage} alt="Knitting Machine" className="w-full max-w-4xl" />
-        </div> */}
+        <div className="my-8 flex justify-center">
+          {imageUrl ? (
+            <img src={imageUrl} alt="Firebase" className="max-w-full h-auto" />
+          ) : (
+            <p>Loading image...</p>
+          )}
+        </div>
 
         <section id="machine" className="mb-8">
           <h2 className="text-3xl font-semibold mb-4">Needle Positions</h2>
