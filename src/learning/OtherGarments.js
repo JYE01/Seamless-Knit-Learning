@@ -1,6 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import app from "../Firebase"
 
 const OtherGarment = () => {
+  const storage = getStorage(app);
+  const [imageUrl, setImageUrl] = useState("");
+
+  useEffect(() => {
+    const storageRef = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingCap.jpg');
+    getDownloadURL(storageRef)
+    .then((url) => {
+      setImageUrl(url);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
   return (
     <div className="w-full h-full overflow-y-scroll p-8 bg-white text-gray-900">
       <h1 className="text-4xl font-bold mb-6">Knitting Other Garments: Socks, Mittens, Gloves, and Caps</h1>
@@ -110,7 +126,13 @@ const OtherGarment = () => {
 
       <section className="mb-8">
         <h2 className="text-3xl font-semibold mb-4">Caps</h2>
-
+        <div className="my-8 flex justify-center">
+          {imageUrl ? (
+            <img src={imageUrl} alt="Firebase" className="max-w-full h-auto" />
+          ) : (
+            <p>Loading image...</p>
+          )}
+        </div>
         <h3 className="text-2xl font-semibold mb-4">Quickly Knitted Cap</h3>
         <p className="mb-4">
           Cast on the circumference of the head minus 15 - 20% and begin with a rib band or a seam. Knit straight up until 10 rows before the head height, and then knit the last 10 rows on every other needle and with half stitch size. Pull the stitches together at the top, and fasten securely.

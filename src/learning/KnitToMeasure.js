@@ -1,6 +1,58 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import app from "../Firebase"
 
 const KnitToMeasure = () => {
+  const storage = getStorage(app);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl1, setImageUrl1] = useState("");
+  const [imageUrl2, setImageUrl2] = useState("");
+  const [imageUrl3, setImageUrl3] = useState("");
+
+  useEffect(() => {
+    const storageRef = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingMeasureGirlEN.gif');
+    getDownloadURL(storageRef)
+    .then((url) => {
+      setImageUrl(url);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef1 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingFig2_2EN.gif');
+    getDownloadURL(storageRef1)
+    .then((url1) => {
+      setImageUrl1(url1);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef2 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingFig2_3EN.gif');
+    getDownloadURL(storageRef2)
+    .then((url2) => {
+      setImageUrl2(url2);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef3 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingFig2_4.gif');
+    getDownloadURL(storageRef3)
+    .then((url3) => {
+      setImageUrl3(url3);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+  
   return (
     <div className="w-full h-full overflow-y-scroll p-8 bg-white text-gray-900">
       <h1 className="text-4xl font-bold mb-6">Knitting to Measure: A Comprehensive Guide</h1>
@@ -17,6 +69,13 @@ const KnitToMeasure = () => {
 
       <section className="mb-8">
         <h2 className="text-3xl font-semibold mb-4">Abbreviations of Measurements</h2>
+        <div className="my-8 flex justify-center">
+          {imageUrl ? (
+            <img src={imageUrl} alt="Firebase" className="max-w-full h-auto" />
+          ) : (
+            <p>Loading image...</p>
+          )}
+        </div>
         <ul className="list-disc ml-8 space-y-2">
           <li><strong>BL</strong>: Back Length</li>
           <li><strong>SL</strong>: Sleeve Length</li>
@@ -53,12 +112,33 @@ const KnitToMeasure = () => {
         <p className="mb-4">
           Before drawing your knitting pattern (sloper), you need to decide how much to add to the measurements. This depends on whether the sweater is to be worn over other clothes or close to the body. Knitted work is elastic, so knitting exactly to the measurements will usually work, but adding extra for comfort is recommended.
         </p>
+        <div className="my-8 flex justify-center">
+          {imageUrl1 ? (
+            <img src={imageUrl1} alt="Firebase" className="max-w-full h-auto" />
+          ) : (
+            <p>Loading image...</p>
+          )}
+        </div>
         <p className="mb-4">
           For example, adding 6-7 cm to the chest circumference (CC) will give you some free space around the body. If you are knitting without rounding the armhole, you should add at least 14-16 cm to the CC to ensure a good fit.
         </p>
+        <div className="my-8 flex justify-center">
+          {imageUrl2 ? (
+            <img src={imageUrl2} alt="Firebase" className="max-w-full h-auto" />
+          ) : (
+            <p>Loading image...</p>
+          )}
+        </div>
         <p className="mb-4">
           A rule of thumb for armhole height is to use 2/9 of (CC + additions). If you don’t have the NS measurement, you can also use 2/9 of UC without additions. Additionally, 3 × (2/9 of CC) can be used as the length of the sweater until the hips.
         </p>
+        <div className="my-8 flex justify-center">
+          {imageUrl3 ? (
+            <img src={imageUrl3} alt="Firebase" className="max-w-full h-auto" />
+          ) : (
+            <p>Loading image...</p>
+          )}
+        </div>
         <p className="mb-4">
           To begin, mark out the back length (BL) along a vertical line and 1/4 of the chest circumference perpendicular to the back line at its bottom end. This forms a rectangle, which becomes the basic structure of your sloper.
         </p>

@@ -1,6 +1,71 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import app from "../Firebase"
 
 const BabyKnit = () => {
+  const storage = getStorage(app);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl1, setImageUrl1] = useState("");
+  const [imageUrl2, setImageUrl2] = useState("");
+  const [imageUrl3, setImageUrl3] = useState("");
+  const [imageUrl4, setImageUrl4] = useState("");
+
+  useEffect(() => {
+    const storageRef = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingFig7-1EN.gif');
+    getDownloadURL(storageRef)
+    .then((url) => {
+      setImageUrl(url);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef1 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingBabySweater.jpg');
+    getDownloadURL(storageRef1)
+    .then((url1) => {
+      setImageUrl1(url1);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef2 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingFig7-2EN.gif');
+    getDownloadURL(storageRef2)
+    .then((url2) => {
+      setImageUrl2(url2);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef3 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingMark.jpg');
+    getDownloadURL(storageRef3)
+    .then((url3) => {
+      setImageUrl3(url3);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef4 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingFig7-3EN.gif');
+    getDownloadURL(storageRef4)
+    .then((url4) => {
+      setImageUrl4(url4);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+
   return (
     <div className="w-full h-full overflow-y-scroll p-8 bg-white text-gray-900">
       <h1 className="text-4xl font-bold mb-6">Baby Knitting Guide: A Comprehensive Learning Module</h1>
@@ -95,19 +160,35 @@ const BabyKnit = () => {
           Start at the bottom and cast on the measurement of the chest circumference. Knit straight up to the armholes. Divide the knitting with a contrasting colored yarn and separate the lower front parts to sew onto the upper front parts later. Continue knitting the sleeves and neckline using various shaping techniques like shortened rows and stitch increases.
         </p>
         <figure className="my-4">
-          {/* Image placeholder for Fig. 1 */}
-          <img src="path/to/your/image1.jpg" alt="Cardigan Diagram" className="w-full h-auto" />
+          <div className="my-8 flex justify-center">
+            {imageUrl ? (
+              <img src={imageUrl} alt="Firebase" className="max-w-full h-auto" />
+            ) : (
+              <p>Loading image...</p>
+            )}
+          </div>
           <figcaption className="text-center mt-2">Fig. 1: Diagram of Quickly Knitted Cardigan in One Piece</figcaption>
         </figure>
-        {/* Continue with more detailed instructions, including the round yoke cardigan and sidewards knitted cardigan with shortened rows */}
 
         <h3 className="text-2xl font-semibold mb-4">Cardigan with a Round Yoke</h3>
         <p className="mb-4">
           The round yoke can be knitted transversely using shortened rows. The neck circumference is calculated based on the knitting sample, and the stitches are picked up to shape the sleeves and front pieces. This method creates a seamless and beautiful rounded finish.
         </p>
         <figure className="my-4">
-          {/* Image placeholder for Fig. 2 */}
-          <img src="path/to/your/image2.jpg" alt="Round Yoke Cardigan Diagram" className="w-full h-auto" />
+          <div className="my-8 flex justify-center">
+            {imageUrl1 ? (
+              <img src={imageUrl1} alt="Firebase" className="max-w-full h-auto" />
+            ) : (
+              <p>Loading image...</p>
+            )}
+          </div>
+          <div className="my-8 flex justify-center">
+            {imageUrl2 ? (
+              <img src={imageUrl2} alt="Firebase" className="max-w-full h-auto" />
+            ) : (
+              <p>Loading image...</p>
+            )}
+          </div>
           <figcaption className="text-center mt-2">Fig. 2: Diagram of Cardigan with Round Yoke</figcaption>
         </figure>
       </section>
@@ -118,8 +199,20 @@ const BabyKnit = () => {
           Rompers are versatile and comfortable garments for babies. You can knit rompers as two laterally reversed pieces and avoid seams in the middle by starting at the crotch. This section explains how to knit a romper, calculate gusset dimensions, and shape the piece to fit comfortably with room for a nappy.
         </p>
         <figure className="my-4">
-          {/* Image placeholder for Fig. 3 */}
-          <img src="path/to/your/image3.jpg" alt="Romper Diagram" className="w-full h-auto" />
+          <div className="my-8 flex justify-center">
+            {imageUrl3 ? (
+              <img src={imageUrl3} alt="Firebase" className="max-w-full h-auto" />
+            ) : (
+              <p>Loading image...</p>
+            )}
+          </div>
+          <div className="my-8 flex justify-center">
+            {imageUrl4 ? (
+              <img src={imageUrl4} alt="Firebase" className="max-w-full h-auto" />
+            ) : (
+              <p>Loading image...</p>
+            )}
+          </div>
           <figcaption className="text-center mt-2">Fig. 3: Diagram of Romper Knitting</figcaption>
         </figure>
         <p className="mb-4">

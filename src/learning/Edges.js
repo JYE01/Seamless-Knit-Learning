@@ -1,6 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import app from "../Firebase"
 
 const Edges = () => {
+  const storage = getStorage(app);
+  const [imageUrl, setImageUrl] = useState("");
+
+  useEffect(() => {
+    const storageRef = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingFigMasks.gif');
+    getDownloadURL(storageRef)
+    .then((url) => {
+      setImageUrl(url);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
   return (
     <div className="w-full h-screen overflow-y-scroll p-8 bg-white text-gray-900">
       <h1 className="text-4xl font-bold mb-6">Casting On and Edges for Knitting Machines</h1>
@@ -55,6 +71,13 @@ const Edges = () => {
 
       <section className="mb-8">
         <h2 className="text-3xl font-semibold mb-4">Casting On with the Ribber</h2>
+        <div className="my-8 flex justify-center">
+          {imageUrl ? (
+            <img src={imageUrl} alt="Firebase" className="max-w-full h-auto" />
+          ) : (
+            <p>Loading image...</p>
+          )}
+        </div>
         <p className="mb-4">
           You can either cast on with two rounds of circular knitting or rack the needles for an elastic border, useful for items like socks. Bring the needles up for 1/1 knitting and adjust the racking grip handle based on the outermost needles' position. Hang the comb and weights, then shift back to the original setting and continue knitting.
         </p>
