@@ -7,10 +7,24 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 
+import { Link } from 'react-router-dom';
+
 const Module = () => {
     const [modules, setModules] = useState([]);
     const [openModules, setOpenModules] = useState({}); // Track which modules are open
     const db = getFirestore(Firebase);
+    const paths = [
+      "/Main/IntroToKnit",
+      "/Main/KnitSample",
+      "/Main/KnitToMeasure",
+      "/Main/Edges",
+      "/Main/Garment",
+      "/Main/Mounting",
+      "/Main/OtherGarments",
+      "/Main/BabyKnit",
+      "/Main/PatternKnit",
+      "/Main/ProbKnit",
+    ]
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,7 +73,9 @@ const Module = () => {
                   <ul className="space-y-2 pl-4">
                     {module.subtopics.map((subtopic, subIndex) => (
                       <li key={subIndex} className="text-gray-700">
+                        <Link to={paths[subIndex] || "#"}>
                         <i className="mr-2">📄</i> {subtopic}
+                        </Link>
                       </li>
                     ))}
                   </ul>
