@@ -7,7 +7,7 @@ const IntroToKnit = () => {
   const [imageUrl, setImageUrl] = useState("");
   
   useEffect(() => {
-    const storageRef = ref(storage,  'gs://seamless-knitting.appspot.com/Module/MachineKnittingKnittax.jpg');
+    const storageRef = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingKnittax.jpg');
     getDownloadURL(storageRef)
     .then((url) => {
       setImageUrl(url);
