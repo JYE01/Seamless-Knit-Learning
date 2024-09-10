@@ -22,7 +22,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-1/5 bg-white p-6 border-r space-y-8">
+    <div className="w-1/6 bg-white p-6 border-r space-y-8">
       <div className="relative account">
         <button onClick={toggleDropdown} className="flex items-center gap-2">
           <i className="fas fa-user-circle text-5xl"></i>
