@@ -39,7 +39,7 @@ const Navbar = () => {
         </button>
 
         {dropdownVisible && (
-          <div className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg py-4 z-10">
+          <div className="absolute right-0 left-1 mt-2 w-60 bg-white rounded-lg shadow-lg py-4 z-10">
             <div className="flex flex-col items-center py-2">
               <div className="flex items-center justify-center bg-gray-200 w-14 h-14 rounded-full mb-2">
                 <span className="text-2xl font-bold">{firstCharacter}</span>
