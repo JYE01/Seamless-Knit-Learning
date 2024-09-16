@@ -19,7 +19,7 @@ const Edges = () => {
   }, []);
 
   return (
-    <div className="w-full h-screen overflow-y-scroll p-8 bg-white text-gray-900">
+    <div className="w-full h-full overflow-y-scroll p-8 bg-white text-gray-900">
       <h1 className="text-4xl font-bold mb-6">Casting On and Edges for Knitting Machines</h1>
 
       <section className="mb-8">
