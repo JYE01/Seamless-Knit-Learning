@@ -4,6 +4,7 @@ import { collection, query, getDocs, getFirestore, addDoc } from 'firebase/fires
 import AddTopic from './AddTopic'; 
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Discuss = () => {
   const [discussions, setDiscussions] = useState([]);
@@ -11,7 +12,9 @@ const Discuss = () => {
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const db = getFirestore(Firebase);
-
+  const navigate = useNavigate(); // Initialize navigation
+  const name = localStorage.getItem("studentName");
+  
   useEffect(() => {
     const fetchData = async () => {
       const discussionsQuery = query(collection(db, 'Discussion'));
@@ -26,6 +29,7 @@ const Discuss = () => {
     e.preventDefault();
     await addDoc(collection(db, 'Discussion'), {
       Title: newTitle,
+      Publisher: name,
       Description: newDescription
     });
     setShowModal(false); // Hide modal after submission
@@ -40,6 +44,11 @@ const Discuss = () => {
     const discussionsSnapShot = await getDocs(discussionsQuery);
     const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setDiscussions([...discussionsData]);
+  };
+
+  const handleTitleClick = (discussionId) => {
+    localStorage.setItem("titleID", discussionId); // Save the clicked discussion's ID in local storage
+    navigate('/Main/DiscussionPage'); // Redirect to DiscussionPage
   };
 
   return (
@@ -72,7 +81,11 @@ const Discuss = () => {
         <div className="discussion-thread space-y-4" style={{ maxHeight: '500px', overflowY: 'auto' }}>
           {discussions.length > 0 ? (
             discussions.map((Discussion) => (
-              <div key={Discussion.id} className="discussion bg-gray-100 p-4 rounded-lg">
+              <div 
+                key={Discussion.id} 
+                className="discussion bg-gray-100 p-4 rounded-lg cursor-pointer"
+                onClick={() => handleTitleClick(Discussion.id)} // Navigate on click
+              >
                 <h2 className="font-bold text-base">{Discussion.Title}</h2>
                 <p className="text-gray-500 text-sm">{Discussion.Description}</p>
               </div>
