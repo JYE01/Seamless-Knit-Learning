@@ -1,7 +1,48 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import app from "../Firebase"
 import { Link } from 'react-router-dom';
 
 const PatternKnit= () => {
+  const storage = getStorage(app);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl1, setImageUrl1] = useState("");
+  const [imageUrl2, setImageUrl2] = useState("");
+
+  useEffect(() => {
+    const storageRef = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnitting-Top.jpg');
+    getDownloadURL(storageRef)
+    .then((url) => {
+      setImageUrl(url);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef1 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnitting-8-weave.gif');
+    getDownloadURL(storageRef1)
+    .then((url1) => {
+      setImageUrl1(url1);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+  useEffect(() => {
+    const storageRef2 = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnitting-8-West.jpg');
+    getDownloadURL(storageRef2)
+    .then((url2) => {
+      setImageUrl2(url2);
+    })
+    .catch((error) => {
+      console.error("Cannot get image from firebase storage", error);
+    })
+  }, []);
+
+
   return (
     <div className="w-full h-full overflow-y-scroll p-8 bg-white text-gray-900">
       <h2 className="text-3xl font-bold mb-4">Patterns with Single Bed Machine</h2>
@@ -44,6 +85,13 @@ const PatternKnit= () => {
       </p>
 
       <h3 className="text-2xl font-semibold mb-2">Imitated Jacquard</h3>
+      <div className="my-8 flex justify-center">
+            {imageUrl ? (
+              <img src={imageUrl} alt="Firebase" className="max-w-full h-auto" />
+            ) : (
+              <p>Loading image...</p>
+            )}
+          </div>
       <p className="mb-4">
         If you knit with yarn that is too thin for colour knitting, you have another option, which I call
         "imitated jacquard". Thereby I mean a type of patterns that consist of two rows of pattern
@@ -80,12 +128,26 @@ const PatternKnit= () => {
       </p>
 
       <h3 className="text-2xl font-semibold mb-2">Weave Patterns</h3>
+      <div className="my-8 flex justify-center">
+            {imageUrl1 ? (
+              <img src={imageUrl1} alt="Firebase" className="max-w-full h-auto" />
+            ) : (
+              <p>Loading image...</p>
+            )}
+          </div>
       <p className="mb-4">
         Weave patterns appear on the wrong side. You can only make them if you have weave brushes, either
         built into the machine, or loose, as extra equipment that may be put on.
       </p>
 
       <h3 className="text-2xl font-semibold mb-2">Intarsia Knitting</h3>
+      <div className="my-8 flex justify-center">
+            {imageUrl2 ? (
+              <img src={imageUrl2} alt="Firebase" className="max-w-full h-auto" />
+            ) : (
+              <p>Loading image...</p>
+            )}
+          </div>
       <p className="mb-4">
         Intarsia knitting is made with an intarsia carriage which is extra equipment. It knits with the
         needles standing in idle position. Thereby, you can place the thread by hand, allowing you to place

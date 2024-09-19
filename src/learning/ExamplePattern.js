@@ -15,6 +15,7 @@ const ExamplePattern = () => {
     }; 
 
     const storage = getStorage(app);
+    const [imageUrl, setImageUrl] = useState("");
     const [imageUrls, setImageUrls] = useState(Array(35).fill('')); // Initialize an array for all image URLs
 
     const imagePaths = [
@@ -71,6 +72,17 @@ const ExamplePattern = () => {
         fetchImages();
     }, []);
 
+    useEffect(() => {
+      const storageRef = ref(storage, 'gs://seamless-knitting.appspot.com/Module/MachineKnittingPattern32.gif');
+      getDownloadURL(storageRef)
+      .then((url) => {
+        setImageUrl(url);
+      })
+      .catch((error) => {
+        console.error("Cannot get image from firebase storage", error);
+      })
+    }, []);
+
     return (
         <div className="w-full h-full overflow-y-scroll p-8 bg-white text-gray-900">
             {/* Section 1 */}
@@ -92,9 +104,14 @@ const ExamplePattern = () => {
             {/* Section 3 */}
             <h1 className="text-3xl font-bold mb-6">Bands</h1>
             <div className="my-8 flex flex-col items-center space-y-4">
-                {imageUrls.slice(11, 33).map((url, index) => (
+                {imageUrls.slice(11, 30).map((url, index) => (
                     url ? <img key={index + 11} src={url} alt={`Pattern ${index + 12}`} className="max-w-full h-auto" /> : <p key={index + 11}>Loading image {index + 12}...</p>
                 ))}
+                {imageUrl ? (
+                  <img src={imageUrl} alt="Firebase" className="max-w-full h-auto" />
+                ) : (
+                  <p>Loading image...</p>
+                )}
             </div>
 
             {/* Section 4 */}
