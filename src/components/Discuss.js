@@ -4,26 +4,34 @@ import { collection, query, getDocs, getFirestore, addDoc } from 'firebase/fires
 import AddTopic from './AddTopic'; 
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const Discuss = () => {
   const [discussions, setDiscussions] = useState([]);
+  const [filteredDiscussions, setFilteredDiscussions] = useState([]); // State for filtered discussions
   const [showModal, setShowModal] = useState(false); // Modal visibility state
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const db = getFirestore(Firebase);
   const navigate = useNavigate(); // Initialize navigation
   const name = localStorage.getItem("studentName");
-  
+  const searchTerm = localStorage.getItem("searchTerm")?.toLowerCase() || ''; // Get and lowercase searchTerm
+
   useEffect(() => {
     const fetchData = async () => {
       const discussionsQuery = query(collection(db, 'Discussion'));
       const discussionsSnapShot = await getDocs(discussionsQuery);
       const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setDiscussions([...discussionsData]);
+      setDiscussions(discussionsData);
+
+      // Filter discussions based on the searchTerm
+      const filtered = discussionsData.filter(discussion =>
+        discussion.Title.toLowerCase().includes(searchTerm)
+      );
+      setFilteredDiscussions(filtered);
     };
     fetchData();
-  }, [db]);
+  }, [db, searchTerm]);
 
   const handleAddTopic = async (e) => {
     e.preventDefault();
@@ -43,12 +51,18 @@ const Discuss = () => {
     const discussionsQuery = query(collection(db, 'Discussion'));
     const discussionsSnapShot = await getDocs(discussionsQuery);
     const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setDiscussions([...discussionsData]);
+    setDiscussions(discussionsData);
+
+    // Re-apply filtering after new topic addition
+    const filtered = discussionsData.filter(discussion =>
+      discussion.Title.toLowerCase().includes(searchTerm) // Case-insensitive, partial match
+    );
+    setFilteredDiscussions(filtered);
   };
 
   const handleTitleClick = (discussionId) => {
-    localStorage.setItem("titleID", discussionId); // Save the clicked discussion's ID in local storage
-    navigate('/Main/DiscussionPage'); // Redirect to DiscussionPage
+    localStorage.setItem("titleID", discussionId);
+    navigate('/Main/DiscussionPage');
   };
 
   return (
@@ -79,8 +93,8 @@ const Discuss = () => {
 
         {/* Discussion Thread */}
         <div className="discussion-thread space-y-4" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-          {discussions.length > 0 ? (
-            discussions.map((Discussion) => (
+          {filteredDiscussions.length > 0 ? (
+            filteredDiscussions.map((Discussion) => (
               <div 
                 key={Discussion.id} 
                 className="discussion bg-gray-100 p-4 rounded-lg cursor-pointer"
