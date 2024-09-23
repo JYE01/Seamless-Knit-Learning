@@ -23,6 +23,7 @@ import PatternKnit from './learning/PatternKnit';
 import ProbKnit from './learning/ProbKnit';
 import ExamplePattern from './learning/ExamplePattern'; 
 import DiscussionPage from './components/DiscussionPage';
+import QuizPage from './components/QuizPage';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
               <Route path="/Main/ProbKnit" element={<ProbKnit />} />
               <Route path="/Main/ExamplePattern" element={<ExamplePattern />} />
               <Route path="/Main/DiscussionPage" element={<DiscussionPage />} />
+              <Route path="/Main/QuizPage" element={<QuizPage />} />
             </Route> 
       </Routes>
     </>

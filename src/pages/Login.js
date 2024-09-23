@@ -19,12 +19,12 @@ function LogIn() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
-      const studentDoc = await getDoc(doc(db, "Users", user.uid));
-      const studentData = studentDoc.data();
-      const studentName = studentData.Name;
+      const Doc = await getDoc(doc(db, "Users", user.uid));
+      const Data = Doc.data();
+      const name = Data.Name;
       console.log("User logged in successfully");
-      localStorage.setItem("studentName", studentName);
-      localStorage.setItem("studentEmail", email);
+      localStorage.setItem("Name", name);
+      localStorage.setItem("Email", email);
       toast.success("Logged in successfully!", {
         position: "top-center",
       });
@@ -51,8 +51,8 @@ function LogIn() {
       const userDoc = await getDoc(doc(db, "Users", user.uid));
       const userData = userDoc.data();
       const userName = userData.Name;
-      localStorage.setItem("studentName", userName);
-      localStorage.setItem("studentEmail", googleEmail);
+      localStorage.setItem("Name", userName);
+      localStorage.setItem("Email", googleEmail);
   
       if (userDoc.exists()) {
         const userData = userDoc.data();

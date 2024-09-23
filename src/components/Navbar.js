@@ -4,20 +4,20 @@ import './Navbar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Navbar = () => {
-  const [studentName, setStudentName] = useState("");
-  const [studentEmail, setStudentEmail] = useState("");
+  const [Name, setName] = useState("");
+  const [Email, setEmail] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
   const location = useLocation(); // To track the current route
 
   useEffect(() => {
-    const name = localStorage.getItem("studentName");
-    const email = localStorage.getItem("studentEmail");
-    setStudentName(name);
-    setStudentEmail(email);
+    const name = localStorage.getItem("Name");
+    const email = localStorage.getItem("Email");
+    setName(name);
+    setEmail(email);
   }, []);
 
-  const firstCharacter = studentName ? studentName.charAt(0) : '';
+  const firstCharacter = Name ? Name.charAt(0) : '';
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -34,7 +34,8 @@ const Navbar = () => {
   return (
     <div className="w-1/6 bg-white p-6 border-r space-y-8">
       <div className="relative account">
-        <button onClick={toggleDropdown} className="flex items-center gap-2">
+        <button onClick={toggleDropdown} className="flex items-center gap-2" style={{background: 'none'}}
+        >
           <i className="fas fa-user-circle text-5xl"></i>
         </button>
 
@@ -44,8 +45,8 @@ const Navbar = () => {
               <div className="flex items-center justify-center bg-gray-200 w-14 h-14 rounded-full mb-2">
                 <span className="text-2xl font-bold">{firstCharacter}</span>
               </div>
-              <p className="font-bold">{studentName}</p>
-              <p className="text-sm text-gray-500">{studentEmail}</p>
+              <p className="font-bold">{Name}</p>
+              <p className="text-sm text-gray-500">{Email}</p>
             </div>
             <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-cog"></i> Manage Account
@@ -63,7 +64,7 @@ const Navbar = () => {
       </div>
 
       {/* Sidebar Links */}
-      {/* <nav>
+      <nav>
         <p className="font-semibold text-gray-700 mb-4 text-lg">OVERVIEW</p>
         <ul className="space-y-6">
           {menuItems.map((item, index) => (
@@ -80,8 +81,8 @@ const Navbar = () => {
             </li>
           ))}
         </ul>
-      </nav> */}
-      <nav>
+      </nav>
+      {/* <nav>
         <p className="font-semibold text-gray-700 mb-4 text-lg">OVERVIEW</p>
         <ul className="space-y-6">
           <li>
@@ -106,7 +107,7 @@ const Navbar = () => {
           </li>
           <li className="text-gray-700 cursor-pointer text-lg">Search</li>
         </ul>
-      </nav>
+      </nav> */}
     </div>
   );
 };

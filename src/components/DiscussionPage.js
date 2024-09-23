@@ -1,56 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import Firebase from '../Firebase';
-import { doc, getDoc, getFirestore, updateDoc } from 'firebase/firestore';
-import { ToastContainer,toast } from "react-toastify";
+import { doc, getDoc, getFirestore, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'; 
+import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const DiscussionPage = () => {
-  const titleID = localStorage.getItem("titleID"); // Get titleID from local storage
+  const titleID = localStorage.getItem("titleID");
   const [replyText, setReplyText] = useState('');
   const [showReplyArea, setShowReplyArea] = useState(false);
-  const [discussion, setDiscussion] = useState(null); // Discussion data
-  const [responses, setResponses] = useState([]); // Responses data
-  const db = getFirestore(Firebase); // Firestore instance
-  const studentName = localStorage.getItem("studentName"); // Get the student name from localStorage
+  const [discussion, setDiscussion] = useState(null);
+  const [responses, setResponses] = useState([]);
+  const [filterOption, setFilterOption] = useState('All replies');
+  const [replyToDelete, setReplyToDelete] = useState(null); 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const db = getFirestore(Firebase);
+  const currentUserEmail = localStorage.getItem("Email");
+  const currentUserName = localStorage.getItem("Name");
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDiscussionData = async () => {
       if (!titleID) {
         console.error("No titleID found in localStorage");
         return;
       }
-        // Fetch the specific document from Firestore using the document ID
-        const discussionDoc = await getDoc(doc(db, 'Discussion', titleID));
-        
-        if (discussionDoc.exists()) {
-          const data = discussionDoc.data();
-          setDiscussion(data); // Set discussion data
-          // Extract responses from the map field
-          if (data.Response) {
-            const responsesArray = Object.entries(data.Response); // Convert map to array of [name, response]
-            setResponses(responsesArray); // Set responses data
-          }
-        } else {
-          console.error("No such document!");
+      const discussionDoc = await getDoc(doc(db, 'Discussion', titleID));
+      if (discussionDoc.exists()) {
+        const data = discussionDoc.data();
+        setDiscussion(data);
+        if (data.Response) {
+          setResponses(data.Response);
         }
+      } else {
+        console.error("No such document!");
+      }
     };
-    fetchData();
+
+    fetchDiscussionData();
   }, [db, titleID]);
 
   const handleReplyClick = () => {
-    setShowReplyArea(true); // Show the reply textarea when "Reply" is clicked
+    setShowReplyArea(true);
   };
 
   const handleCancelClick = () => {
     setShowReplyArea(false);
-    setReplyText(''); // Clear the text when canceling
+    setReplyText('');
   };
 
   const handleTextAreaChange = (e) => {
     setReplyText(e.target.value);
   };
 
-  // Function to submit the response and store it in Firestore
   const handleSubmitReply = async () => {
     if (replyText.trim() === '') {
       toast.error("Reply can't be empty!", {
@@ -58,57 +58,74 @@ const DiscussionPage = () => {
       });
       return;
     }
+    const discussionRef = doc(db, 'Discussion', titleID);
 
-    try {
-      // Get the document reference
-      const discussionRef = doc(db, 'Discussion', titleID);
+    const newReply = {
+      Email: currentUserEmail,
+      Name: currentUserName,
+      Reply: replyText
+    };
 
-      // Update the document by adding the response to the "Response" map
-      await updateDoc(discussionRef, {
-        [`Response.${studentName}`]: replyText // Use the student's name as the key, and the replyText as the value
-      });
+    // Add the new reply to the Response array using arrayUnion
+    await updateDoc(discussionRef, {
+      Response: arrayUnion(newReply)
+    });
 
-      // Re-fetch the updated data after submission
-      const discussionDoc = await getDoc(discussionRef);
-      if (discussionDoc.exists()) {
-        const updatedData = discussionDoc.data();
-        setDiscussion(updatedData);
-
-        // Update the responses after submission
-        if (updatedData.Response) {
-          const updatedResponsesArray = Object.entries(updatedData.Response);
-          setResponses(updatedResponsesArray);
-        }
+    // Fetch the updated discussion data to reflect the new reply
+    const discussionDoc = await getDoc(discussionRef);
+    if (discussionDoc.exists()) {
+      const updatedData = discussionDoc.data();
+      setDiscussion(updatedData);
+      if (updatedData.Response) {
+        setResponses(updatedData.Response);
       }
-
-      // Clear the reply input and hide the reply area
-      setReplyText('');
-      setShowReplyArea(false);
-
-    } catch (error) {
-      console.error('Error adding response: ', error);
-      toast.error("Error submitting your reply. Please try again.", {
-        position: "top-center",
-      });
     }
+
+    // Clear the reply area and hide it after submission
+    setReplyText('');
+    setShowReplyArea(false);
   };
 
-  // Function to generate profile image with the first letter of the name
-  const generateProfilePicture = (name) => {
-    const firstLetter = name.charAt(0).toUpperCase();
-    return (
-      <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
-        {firstLetter}
-      </div>
-    );
+  const handleDeleteClick = (reply) => {
+    setReplyToDelete(reply);
+    setShowDeleteModal(true);
   };
+
+  const handleDeleteReply = async () => {
+    const discussionRef = doc(db, 'Discussion', titleID);
+
+    // Remove the selected reply from the Response array using arrayRemove
+    await updateDoc(discussionRef, {
+      Response: arrayRemove(replyToDelete)
+    });
+
+    // Fetch the updated discussion data
+    const discussionDoc = await getDoc(discussionRef);
+    if (discussionDoc.exists()) {
+      const updatedData = discussionDoc.data();
+      setDiscussion(updatedData);
+      if (updatedData.Response) {
+        setResponses(updatedData.Response);
+      }
+    }
+
+    setShowDeleteModal(false); // Hide confirmation modal
+    toast.success("Reply deleted successfully!", {
+      position: "top-center",
+    });
+  };
+
+  const filteredResponses = responses.filter((response) => {
+    if (filterOption === 'My replies') {
+      return response.Email === currentUserEmail;
+    }
+    return true;
+  });
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      {/* Check if discussion data exists */}
+    <div className="p-8 bg-gray-100 h-full overflow-y-auto">
       {discussion ? (
         <div>
-          {/* Main discussion area */}
           <div className={`bg-white p-6 shadow-md ${showReplyArea ? 'rounded-t' : 'rounded'} mb-0`}>
             <h2 className="text-xl font-bold mb-2">{discussion.Title}</h2>
             <p className="text-gray-600">Published by {discussion.Publisher}</p>
@@ -124,7 +141,6 @@ const DiscussionPage = () => {
             )}
           </div>
 
-          {/* Reply area connected to the main card */}
           {showReplyArea && (
             <div className="bg-white p-6 shadow-md border-t-0 rounded-b">
               <textarea
@@ -150,25 +166,68 @@ const DiscussionPage = () => {
             </div>
           )}
 
-          {/* User Responses */}
-          <div className="bg-white shadow-md rounded-lg mt-6">
-            {responses.length > 0 ? (
-              responses.map(([name, content], index) => (
-                <div key={index} className="flex items-start p-4 border-b border-gray-200">
-                  {/* Profile Picture */}
-                  {generateProfilePicture(name)}
+          <div className="flex justify-end mt-4">
+            <select
+              value={filterOption}
+              onChange={(e) => setFilterOption(e.target.value)}
+              className="border-gray-300 rounded-lg p-2"
+            >
+              <option value="All replies">All replies</option>
+              <option value="My replies">My replies</option>
+            </select>
+          </div>
 
-                  {/* Response Content */}
-                  <div className="ml-4">
-                    <p className="font-bold text-gray-800">{name}</p>
-                    <p className="text-gray-600">{content}</p>
+          <div className="bg-white shadow-md rounded-lg mt-6">
+            {filteredResponses.length > 0 ? (
+              filteredResponses.map((response, index) => (
+                <div key={index} className="flex items-center p-4 border-b border-gray-200">
+                  <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                    {response.Name.charAt(0).toUpperCase()}
                   </div>
+                  <div className="ml-4 flex-grow">
+                    <p className="font-bold text-gray-800">{response.Name}</p>
+                    <p className="text-gray-600">{response.Reply}</p>
+                  </div>
+                  {response.Email === currentUserEmail && (
+                    <button
+                      className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
+                      onClick={() => handleDeleteClick(response)}
+                      style={{ fontSize: '1.2rem', background: 'none', alignSelf: 'center' }}
+                    >
+                      🗑️
+                    </button>
+                  )}
                 </div>
               ))
             ) : (
               <p className="text-gray-500 p-4">No responses yet.</p>
             )}
           </div>
+
+          {/* Delete Confirmation Modal */}
+          {showDeleteModal && (
+            <div className="fixed z-10 inset-0 flex items-center justify-center">
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+                <p>Are you sure you want to delete this reply?</p>
+                <div className="mt-6 flex justify-end space-x-4">
+                  <button
+                    className="bg-gray-300 px-4 py-2 rounded-lg"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-all"
+                    onClick={handleDeleteReply}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       ) : (
         <p>Loading discussion data...</p>
