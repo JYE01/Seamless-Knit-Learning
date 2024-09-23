@@ -12,7 +12,7 @@ const Discuss = () => {
   const [showModal, setShowModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [filterOption, setFilterOption] = useState('All discussions');
+  const [filterOption, setFilterOption] = useState('All Discussions');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [discussionToDelete, setDiscussionToDelete] = useState(null);
   const db = getFirestore(Firebase);
@@ -45,7 +45,7 @@ const Discuss = () => {
     }
 
     // Apply "My publish" filtering
-    if (filterOption === "My publish") {
+    if (filterOption === "My Discussion") {
       filtered = filtered.filter(discussion => discussion.PubEmail === email); // Correct field: PubEmail
     }
 
@@ -128,8 +128,8 @@ const Discuss = () => {
           onChange={(e) => setFilterOption(e.target.value)}
           className="border-gray-300 rounded-lg p-2"
         >
-          <option value="All discussions">All discussions</option>
-          <option value="My publish">My publish</option>
+          <option value="All Discussions">All Discussion</option>
+          <option value="My Discussion">My Discussion</option>
         </select>
       </div>
 

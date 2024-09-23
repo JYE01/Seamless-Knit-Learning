@@ -10,7 +10,6 @@ import MainLayout from './components/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Quizzes from './pages/Quizzes';
 import Discussion from './pages/Discussion';
-import Calendar from './pages/Calendar';
 import IntroToKnit from './learning/IntroToKnit';
 import KnitSample from './learning/KnitSample';
 import KnitToMeasure from './learning/KnitToMeasure';
@@ -38,7 +37,6 @@ function App() {
               <Route path="/Main/Dashboard" element={<Dashboard />} />
               <Route path="/Main/Quizzes" element={<Quizzes />} />
               <Route path="/Main/Discussion" element={<Discussion />} />
-              <Route path="/Main/Calendar" element={<Calendar />} />
               <Route path="/Main/IntroToKnit" element={<IntroToKnit />} />
               <Route path="/Main/KnitSample" element={<KnitSample />} />
               <Route path="/Main/KnitToMeasure" element={<KnitToMeasure />} />

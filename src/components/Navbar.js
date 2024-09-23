@@ -27,7 +27,6 @@ const Navbar = () => {
     { name: "Dashboard", path: "/Main/Dashboard" },
     { name: "Quizzes", path: "/Main/Quizzes" },
     { name: "Discussion", path: "/Main/Discussion" },
-    { name: "Calendar", path: "/Main/Calendar" },
     { name: "Search", path: "#" } // Change this path as needed
   ];
 

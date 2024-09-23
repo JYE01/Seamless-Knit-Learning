@@ -18,8 +18,8 @@ const QuizPage = () => {
 
     useEffect(() => {
         const fetchQuizData = async () => {
-            const quizRef = doc(db, 'Quizzes', quiz.id);
-            const quizSnap = await getDoc(quizRef);
+            const quizContent = doc(db, 'Quizzes', quiz.id);
+            const quizSnap = await getDoc(quizContent);
 
             if (quizSnap.exists()) {
                 setQuestions(quizSnap.data().Question);
