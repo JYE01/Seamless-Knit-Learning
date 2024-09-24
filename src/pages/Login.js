@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, fetchSignInMethodsForEmail } from "firebase/auth";
 import { auth, db } from "../Firebase"; 
 import { doc, getDoc } from "firebase/firestore";
+import { collection, query, getDocs, getFirestore, where } from 'firebase/firestore';
 import './Login&Signup.css';
 import googleLogo from '../assets/img/googleIcon.png';
 import { Link } from "react-router-dom";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
 
@@ -37,6 +39,54 @@ function LogIn() {
     }
   };
 
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    try {
+      // Query the Users collection where the Email field matches the entered email
+      const usersRef = collection(db, "Users");
+      const querySnapshot = await getDocs(query(usersRef, where("Email", "==", email)));
+
+      if (!querySnapshot.empty) {
+        // Assuming the email is unique, there should only be one matching document
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        const storedPassword = userData.Password; // Assuming you store passwords in plaintext (which is not secure)
+
+        if (storedPassword === password) {
+          console.log("Admin logged in successfully");
+          localStorage.setItem("Name", userData.Name);
+          localStorage.setItem("Email", email);
+          toast.success("Logged in as Admin!", {
+            position: "top-center",
+          });
+          window.location.href = "/Admin"; // Redirect to admin dashboard
+        } else {
+          toast.error("Incorrect password for admin login", {
+            position: "top-center",
+          });
+        }
+      } else {
+        toast.error("Admin user not found", {
+          position: "top-center",
+        });
+      }
+    } catch (error) {
+      console.log("Error logging in as admin:", error.message);
+      toast.error("Error occurred during admin login", {
+        position: "top-center",
+      });
+    }
+  };
+
+
+  const handleSubmit = (e) => {
+    if (email.includes(".adm")) {
+      handleAdminLogin(e); // Call admin login function
+    } else {
+      handleLogIn(e); // Call regular user login function
+    }
+  };
+
   const LoginWithGoogle = async () => {
     if (isGoogleSigningIn) return;
     setIsGoogleSigningIn(true);
@@ -57,7 +107,7 @@ function LogIn() {
       if (userDoc.exists()) {
         const userData = userDoc.data();
   
-        if (userData.Email == googleEmail) {
+        if (userData.Email === googleEmail) {
           console.log("User found in Firestore, logging in...");
           toast.success("Logged in successfully with Google!", {
             position: "top-center",
@@ -65,14 +115,14 @@ function LogIn() {
           window.location.href = "/Main/Dashboard";
         } else {
           console.log("No matching email in Firestore");
-          toast.error("Google account isn't sign up!", {
+          toast.error("Google account isn't signed up!", {
             position: "top-center",
           });
         }
       } else {
         // User document does not exist in Firestore
         console.log("No user document found in Firestore");
-        toast.error("Google account isn't sign up!", {
+        toast.error("Google account isn't signed up!", {
           position: "top-center",
         });
       }
@@ -104,7 +154,7 @@ function LogIn() {
         <Link to="/">{'<Back'}</Link>
         <div className="form-content">
           <header>Login</header>
-          <form onSubmit={handleLogIn}>
+          <form onSubmit={handleSubmit}>
             <div className="field input-field">
               <input
                 type="email"
