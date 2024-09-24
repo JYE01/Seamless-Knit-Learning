@@ -38,6 +38,7 @@ const AddModule = () => {
 
     // Add the subtopic with the topic name, paragraph (content), image, and PDF
     if (topicName.trim() && paragraph.trim()) {
+      const plainTextContent = stripHtmlTags(paragraph);
       const newSubtopic = {
         topicName, // Store topic name
         content: paragraph, // Store paragraph as content
