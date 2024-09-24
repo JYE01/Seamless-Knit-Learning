@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { storage, db } from '../Firebase';
 import { collection, query, getDocs, getFirestore, addDoc, deleteDoc, doc } from 'firebase/firestore'; 
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
 import ReactQuill from 'react-quill'; // For text formatting
 import 'react-quill/dist/quill.snow.css'; // Import Quill CSS for text formatting
 
@@ -20,20 +21,29 @@ const AddModule = () => {
     }
   };
 
+  // Function to strip HTML tags and get plain text
+  const stripHtmlTags = (html) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.innerText; // Returns the plain text
+  };
+
+  const uploadFile = async (file, folder) => {
+    const storageRef = ref(storage, `${folder}/${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    return await getDownloadURL(snapshot.ref); // Return the download URL
+  };
+
   const addSubtopic = async () => {
     let imageUrl = '';
     let pdfUrl = '';
 
     if (image) {
-      const imageRef = storage.ref(`images/${image.name}`);
-      await imageRef.put(image);
-      imageUrl = await imageRef.getDownloadURL();
+      imageUrl = await uploadFile(image, 'Module'); // Upload image to "Module" folder
     }
 
     if (pdf) {
-      const pdfRef = storage.ref(`pdfs/${pdf.name}`);
-      await pdfRef.put(pdf);
-      pdfUrl = await pdfRef.getDownloadURL();
+      pdfUrl = await uploadFile(pdf, 'PDF'); // Upload PDF to "PDF" folder
     }
 
     // Add the subtopic with the topic name, paragraph (content), image, and PDF
@@ -41,7 +51,7 @@ const AddModule = () => {
       const plainTextContent = stripHtmlTags(paragraph);
       const newSubtopic = {
         topicName, // Store topic name
-        content: paragraph, // Store paragraph as content
+        content: plainTextContent, // Store paragraph as content
         imageUrl: imageUrl || '', // Only add image URL if it exists
         pdfUrl: pdfUrl || '', // Only add PDF URL if it exists
       };
