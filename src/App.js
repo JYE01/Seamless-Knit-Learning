@@ -11,23 +11,13 @@ import AdminLayout from './components/AdminLayout';
 import Dashboard from './pages/Dashboard';
 import Quizzes from './pages/Quizzes';
 import Discussion from './pages/Discussion';
-import IntroToKnit from './learning/IntroToKnit';
-import KnitSample from './learning/KnitSample';
-import KnitToMeasure from './learning/KnitToMeasure';
-import Edges from './learning/Edges';
-import Garment from './learning/Garment';
-import Mounting from './learning/Mounting';
-import OtherGarments from './learning/OtherGarments';
-import BabyKnit from './learning/BabyKnit';
-import PatternKnit from './learning/PatternKnit';
-import ProbKnit from './learning/ProbKnit';
-import ExamplePattern from './learning/ExamplePattern'; 
 import DiscussionPage from './components/DiscussionPage';
 import QuizPage from './components/QuizPage';
 import AdminDashboard from './pages/AdminDashboard.js';
 import AddModule from './components/AddModule.js';
 import AdmDiscussion from './pages/AdmDiscussion';
 import AdmDiscussionPage from './components/AdmDiscussionPage.js';
+import Content from './components/Content.js';
 
 function App() {
   return (
@@ -42,25 +32,16 @@ function App() {
             <Route path="/Main/Dashboard" element={<Dashboard />} />
             <Route path="/Main/Quizzes" element={<Quizzes />} />
             <Route path="/Main/Discussion" element={<Discussion />} />
-            <Route path="/Main/IntroToKnit" element={<IntroToKnit />} />
-            <Route path="/Main/KnitSample" element={<KnitSample />} />
-            <Route path="/Main/KnitToMeasure" element={<KnitToMeasure />} />
-            <Route path="/Main/Edges" element={<Edges />} />
-            <Route path="/Main/Garment" element={<Garment />} />
-            <Route path="/Main/Mounting" element={<Mounting />} />
-            <Route path="/Main/OtherGarments" element={<OtherGarments />} />
-            <Route path="/Main/BabyKnit" element={<BabyKnit />} />
-            <Route path="/Main/PatternKnit" element={<PatternKnit />} />
-            <Route path="/Main/ProbKnit" element={<ProbKnit />} />
-            <Route path="/Main/ExamplePattern" element={<ExamplePattern />} />
             <Route path="/Main/DiscussionPage" element={<DiscussionPage />} />
             <Route path="/Main/QuizPage" element={<QuizPage />} />
+            <Route path="/Main/Dashboard/Content" element={<Content />} />
           </Route> 
           <Route path="/Admin" element={<AdminLayout />}>
             <Route path="/Admin/Dashboard" element={<AdminDashboard />} />
             <Route path="/Admin/Dashboard/AddModule" element={<AddModule />} />
             <Route path="/Admin/Discussion" element={<AdmDiscussion />} />
             <Route path="/Admin/DiscussionPage" element={<AdmDiscussionPage />} />
+            <Route path="/Admin/Dashboard/Content" element={<Content />} />
           </Route>
       </Routes>
     </>
