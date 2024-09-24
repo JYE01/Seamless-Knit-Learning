@@ -24,6 +24,8 @@ import ProbKnit from './learning/ProbKnit';
 import ExamplePattern from './learning/ExamplePattern'; 
 import DiscussionPage from './components/DiscussionPage';
 import QuizPage from './components/QuizPage';
+import AdminDashboard from './pages/AdminDashboard.js';
+import AddModule from './components/AddModule.js';
 import AdmDiscussion from './pages/AdmDiscussion';
 import AdmDiscussionPage from './components/AdmDiscussionPage.js';
 
@@ -55,6 +57,8 @@ function App() {
             <Route path="/Main/QuizPage" element={<QuizPage />} />
           </Route> 
           <Route path="/Admin" element={<AdminLayout />}>
+            <Route path="/Admin/Dashboard" element={<AdminDashboard />} />
+            <Route path="/Admin/Dashboard/AddModule" element={<AddModule />} />
             <Route path="/Admin/Discussion" element={<AdmDiscussion />} />
             <Route path="/Admin/DiscussionPage" element={<AdmDiscussionPage />} />
           </Route>

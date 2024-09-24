@@ -24,7 +24,7 @@ const AdminNavbar = () => {
   };
 
   const menuItems = [
-    { name: "Module", path:"/Admin/Module"},
+    { name: "Dashboard", path:"/Admin/Dashboard"},
     { name: "Quizzes", path:"/Admin/Quizzes"},
     { name: "Discussion", path:"/Admin/Discussion"},
     { name: "Search", path: "#" }
