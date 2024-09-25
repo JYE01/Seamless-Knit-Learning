@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import './Navbar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -8,7 +8,8 @@ const AdminNavbar = () => {
   const [Email, setEmail] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
-  const location = useLocation(); // To track the current route
+  const location = useLocation();
+  const dropdownRef = useRef(null); // Reference for dropdown container
 
   useEffect(() => {
     const name = localStorage.getItem("Name");
@@ -23,18 +24,32 @@ const AdminNavbar = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
+  // Close dropdown if clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownVisible(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
   const menuItems = [
-    { name: "Dashboard", path:"/Admin/Dashboard"},
-    { name: "Quizzes", path:"/Admin/Quizzes"},
-    { name: "Discussion", path:"/Admin/Discussion"},
+    { name: "Dashboard", path: "/Admin/Dashboard" },
+    { name: "Quizzes", path: "/Admin/Quizzes" },
+    { name: "Discussion", path: "/Admin/Discussion" },
     { name: "Search", path: "#" }
   ];
 
   return (
     <div className="w-1/6 bg-white p-6 border-r space-y-8">
-      <div className="relative account">
-        <button onClick={toggleDropdown} className="flex items-center gap-2" style={{background: 'none'}}
-        >
+      <div className="relative account" ref={dropdownRef}>
+        <button onClick={toggleDropdown} className="flex items-center gap-2" style={{ background: 'none' }}>
           <i className="fas fa-user-circle text-5xl"></i>
         </button>
 
@@ -81,32 +96,6 @@ const AdminNavbar = () => {
           ))}
         </ul>
       </nav>
-      {/* <nav>
-        <p className="font-semibold text-gray-700 mb-4 text-lg">OVERVIEW</p>
-        <ul className="space-y-6">
-          <li>
-            <Link to="/Main/Dashboard" className="block text-gray-700 cursor-pointer text-lg">
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link to="/Main/Quizzes" className="block text-gray-700 cursor-pointer text-lg">
-              Quizzes
-            </Link>
-          </li>
-          <li>
-            <Link to="/Main/Discussion" className="block text-gray-700 cursor-pointer text-lg">
-              Discussion
-            </Link>
-          </li>
-          <li>
-            <Link to="/Main/Calendar" className="block text-gray-700 cursor-pointer text-lg">
-              Calendar
-            </Link>
-          </li>
-          <li className="text-gray-700 cursor-pointer text-lg">Search</li>
-        </ul>
-      </nav> */}
     </div>
   );
 };

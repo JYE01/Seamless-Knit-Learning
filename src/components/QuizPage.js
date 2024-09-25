@@ -96,6 +96,14 @@ const QuizPage = () => {
         }
     };
 
+    const handleBack = () => {
+        if (location.pathname === '/Admin/QuizPage') {
+            navigate('/Admin/Quizzes');
+        } else {
+            navigate('/Main/Quizzes');
+        }
+    };
+
     return (
         <div className="p-6 bg-white shadow rounded-lg">
             <h1 className="text-2xl font-bold mb-6">{quiz.Name}</h1>
@@ -160,13 +168,16 @@ const QuizPage = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Conditionally render the Back button */}
             <button
-                onClick={() => navigate('/Main/Quizzes ')}
+                onClick={handleBack}
                 className="px-4 py-2 bg-gray-500 text-white rounded mt-4 mr-2"
             >
                 Back
             </button>
 
+            {/* Conditionally render the Submit button or the score */}
             {!submitted ? (
                 <button
                     onClick={handleSubmit}
@@ -179,6 +190,7 @@ const QuizPage = () => {
                     <h2 className="text-xl font-bold">Your Score: {score}/{questions.length}</h2>
                 </div>
             )}
+
             <ToastContainer />
         </div>
     );
