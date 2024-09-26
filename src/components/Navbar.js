@@ -18,8 +18,6 @@ const Navbar = () => {
     setEmail(email);
   }, []);
 
-  const firstCharacter = Name ? Name.charAt(0) : '';
-
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
@@ -57,7 +55,7 @@ const Navbar = () => {
           <div className="absolute right-0 left-1 mt-2 w-60 bg-white rounded-lg shadow-lg py-4 z-10">
             <div className="flex flex-col items-center py-2">
               <div className="flex items-center justify-center bg-gray-200 w-14 h-14 rounded-full mb-2">
-                <span className="text-2xl font-bold">{firstCharacter}</span>
+                <span className="text-2xl font-bold">{Name.charAt(0)}</span>
               </div>
               <p className="font-bold">{Name}</p>
               <p className="text-sm text-gray-500">{Email}</p>
