@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import './Navbar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -8,7 +8,8 @@ const Navbar = () => {
   const [Email, setEmail] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
-  const location = useLocation(); // To track the current route
+  const location = useLocation();
+  const dropdownRef = useRef(null); // Reference for dropdown container
 
   useEffect(() => {
     const name = localStorage.getItem("Name");
@@ -17,11 +18,24 @@ const Navbar = () => {
     setEmail(email);
   }, []);
 
-  const firstCharacter = Name ? Name.charAt(0) : '';
-
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
+
+  // Close dropdown if clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownVisible(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   const menuItems = [
     { name: "Dashboard", path: "/Main/Dashboard" },
@@ -32,9 +46,8 @@ const Navbar = () => {
 
   return (
     <div className="w-1/6 bg-white p-6 border-r space-y-8">
-      <div className="relative account">
-        <button onClick={toggleDropdown} className="flex items-center gap-2" style={{background: 'none'}}
-        >
+      <div className="relative account" ref={dropdownRef}>
+        <button onClick={toggleDropdown} className="flex items-center gap-2" style={{background: 'none'}}>
           <i className="fas fa-user-circle text-5xl"></i>
         </button>
 
@@ -42,7 +55,7 @@ const Navbar = () => {
           <div className="absolute right-0 left-1 mt-2 w-60 bg-white rounded-lg shadow-lg py-4 z-10">
             <div className="flex flex-col items-center py-2">
               <div className="flex items-center justify-center bg-gray-200 w-14 h-14 rounded-full mb-2">
-                <span className="text-2xl font-bold">{firstCharacter}</span>
+                <span className="text-2xl font-bold">{Name.charAt(0)}</span>
               </div>
               <p className="font-bold">{Name}</p>
               <p className="text-sm text-gray-500">{Email}</p>
@@ -81,32 +94,6 @@ const Navbar = () => {
           ))}
         </ul>
       </nav>
-      {/* <nav>
-        <p className="font-semibold text-gray-700 mb-4 text-lg">OVERVIEW</p>
-        <ul className="space-y-6">
-          <li>
-            <Link to="/Main/Dashboard" className="block text-gray-700 cursor-pointer text-lg">
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link to="/Main/Quizzes" className="block text-gray-700 cursor-pointer text-lg">
-              Quizzes
-            </Link>
-          </li>
-          <li>
-            <Link to="/Main/Discussion" className="block text-gray-700 cursor-pointer text-lg">
-              Discussion
-            </Link>
-          </li>
-          <li>
-            <Link to="/Main/Calendar" className="block text-gray-700 cursor-pointer text-lg">
-              Calendar
-            </Link>
-          </li>
-          <li className="text-gray-700 cursor-pointer text-lg">Search</li>
-        </ul>
-      </nav> */}
     </div>
   );
 };

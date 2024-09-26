@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
+import AdmQuiz from "../components/AdmQuiz";
 import { Link } from "react-router-dom";
-import AdminModule from '../components/AdminModule';
 
-const AdminDashboard = () => {
+const AdmQuizzes = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [removeMode, setRemoveMode] = useState(false); // Track whether remove mode is active
   const dropdownRef = useRef(null); // Reference for dropdown container
@@ -31,19 +31,18 @@ const AdminDashboard = () => {
     };
   }, [dropdownRef]);
 
-  // const handleClick = () => {
-  //   Navigate("/Admin/Dashboard/AddModule")
-  // }
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8">Quizzes</h1>
+
+      {/* Reference the dropdown container */}
       <div className="relative flex justify-end" ref={dropdownRef}>
         <button onClick={toggleDropdown} className="bg-blue-500 text-white px-3 py-1 rounded">
           <i className="fas fa-cog"></i> Edit
         </button>
         {dropdownVisible && (
           <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-4 z-10">
-            <Link to="/Admin/Dashboard/AddModule" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
+            <Link to="/Admin/AddQuiz" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-plus"></i> Add
             </Link>
             <button onClick={toggleRemoveMode} className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
@@ -54,10 +53,10 @@ const AdminDashboard = () => {
       </div>
       <br />
       <div className="space-y-6">
-        <AdminModule removeMode={removeMode} />
+        <AdmQuiz removeMode={removeMode} />
       </div>
     </div>
   );
 };
 
-export default AdminDashboard;
+export default AdmQuizzes;

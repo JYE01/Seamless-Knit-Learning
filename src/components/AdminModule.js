@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import Firebase from '../Firebase'; 
-import { collection, query, getDocs, getFirestore } from 'firebase/firestore';
+import { collection, query, getDocs, getFirestore, doc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const AdminModule = () => {
+const AdminModule = ({ removeMode }) => {
     const [modules, setModules] = useState([]);
     const [openModules, setOpenModules] = useState({}); // Track which modules are open
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [moduleToDelete, setModuleToDelete] = useState(null); // To hold the module ID for deletion
     const db = getFirestore(Firebase);
     const navigate = useNavigate();
 
@@ -27,23 +31,62 @@ const AdminModule = () => {
     };
 
     const handleTopicClick = (moduleId, topicKey) => {
-      localStorage.setItem("topicKey", topicKey);
-      localStorage.setItem("moduleId", moduleId);
-      navigate('/Admin/Dashboard/Content'); // Redirect to Content page
+      if (!removeMode) {
+        localStorage.setItem("topicKey", topicKey);
+        localStorage.setItem("moduleId", moduleId);
+        navigate('/Admin/Dashboard/Content'); // Redirect to Content page
+      }
+    };
+
+    // Show delete confirmation modal
+    const handleDeleteClick = (modulId) => {
+      setModuleToDelete(modulId);
+      setShowDeleteModal(true); // Show the confirmation modal
+  };
+
+    // Delete quiz after confirmation
+    const handleDeleteModule = async () => {
+        try {
+            await deleteDoc(doc(db, 'Module', moduleToDelete));
+            setModules(modules.filter(module => module.id !== moduleToDelete)); // Update UI after deletion
+            toast.success("Module deleted successfully!", {
+                position: "top-center",
+            });
+            setShowDeleteModal(false); // Close the modal
+        } catch (error) {
+            console.error("Error deleting module: ", error);
+            toast.error("Error deleting quiz!", {
+                position: "top-center",
+            });
+        }
     };
 
     return (
         <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-15xl mx-auto" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto' }}> 
+          <ToastContainer />
           {modules.map((module, index) => (
             <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-md">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-semibold mb-3">{module.name}</h2>
-                <button
-                  onClick={() => toggleModule(index)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded"
-                >
-                  {openModules[index] ? 'Hide All' : 'Show All'}
-                </button>
+                {removeMode ? (
+                      <button 
+                        onClick={() => handleDeleteClick(module.id)} // Show delete confirmation
+                        className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
+                        style={{
+                            fontSize: '1.2rem',
+                            background: 'none',
+                          }}
+                      >
+                        🗑️
+                      </button>
+                    ) : ( 
+                      <button
+                        onClick={() => toggleModule(index)}
+                        className="bg-blue-500 text-white px-3 py-1 rounded"
+                      >
+                        {openModules[index] ? 'Hide All' : 'Show All'}
+                      </button>
+                )}
               </div>
               <div className="h-3 bg-gray-300 rounded-full">
                 <div
@@ -80,6 +123,30 @@ const AdminModule = () => {
                 )}
             </div>
           ))}
+
+          {/* Delete Confirmation Modal */}
+          {showDeleteModal && (
+                <div className="fixed z-10 inset-0 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+                        <p>Are you sure you want to delete this ?</p>
+                        <div className="mt-6 flex justify-end space-x-4">
+                            <button
+                                className="bg-gray-300 px-4 py-2 rounded-lg"
+                                onClick={() => setShowDeleteModal(false)} // Close the modal
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-all"
+                                onClick={handleDeleteModule} // Confirm delete
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
