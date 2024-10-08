@@ -10,7 +10,6 @@ const Content = () => {
   const storage = getStorage(Firebase);
 
   useEffect(() => {
-    // Get topicKey and moduleId from localStorage
     const topicKey = localStorage.getItem("topicKey");
     const moduleId = localStorage.getItem("moduleId");
 
@@ -21,8 +20,8 @@ const Content = () => {
 
         if (moduleSnap.exists()) {
           const moduleData = moduleSnap.data();
-          const subtopic = moduleData.subtopics[topicKey]; // Retrieve the selected subtopic
-          console.log("Subtopic content:", subtopic); // Debugging: Check subtopic content
+          const subtopic = moduleData.subtopics[topicKey];
+          console.log("Subtopic content:", subtopic);
           setSubtopicContent(subtopic);
         } else {
           console.log("No module found");
@@ -37,13 +36,12 @@ const Content = () => {
     if (subtopicContent && subtopicContent.imageUrl && Array.isArray(subtopicContent.imageUrl)) {
       const fetchImages = async () => {
         try {
-          // Fetch URLs for each image
           const urls = await Promise.all(
             subtopicContent.imageUrl.map(async (imagePath) => {
-              console.log("Fetching image:", imagePath); // Debugging: Check image path
+              console.log("Fetching image:", imagePath);
               const storageRef = ref(storage, imagePath);
               const url = await getDownloadURL(storageRef);
-              console.log("Fetched image URL:", url); // Debugging: Check fetched URL
+              console.log("Fetched image URL:", url);
               return url;
             })
           );
@@ -62,31 +60,31 @@ const Content = () => {
   }
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">{subtopicContent.topicName}</h2>
-      <div>{subtopicContent.content}</div>
+      <div className="bg-white shadow-lg rounded-lg p-6 max-w-6xl mx-auto overflow-y-auto" style={{ maxHeight: '90vh' }}> {/* White card with scroll */}
+        <h2 className="text-2xl font-semibold mb-4">{subtopicContent.topicName}</h2>
+        <div className="mb-4">{subtopicContent.content}</div>
 
-      {/* Display multiple images */}
-      {imageUrl.length > 0 ? (
-        <div className="my-8 flex justify-center flex-wrap">
-          {imageUrl.map((url, index) => (
-            <div key={index} className="p-2">
-              <img src={url} alt="{`Firebase ${index}`}" className="max-w-full h-auto" />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>No images available.</p>
-      )}
+        {/* Display multiple images */}
+        {imageUrl.length > 0 ? (
+          <div className="my-8 flex justify-center flex-wrap">
+            {imageUrl.map((url, index) => (
+              <div key={index} className="p-2">
+                <img src={url} alt={`Firebase ${index}`} className="max-w-full h-auto" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No images available.</p>
+        )}
 
-      {subtopicContent.pdfUrl && (
-        <div className="mt-4">
-          <a href={subtopicContent.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-            View PDF
-          </a>
-        </div>
-      )}
-    </div>
+        {subtopicContent.pdfUrl && (
+          <div className="mt-4">
+            <a href={subtopicContent.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500">
+              View PDF
+            </a>
+          </div>
+        )}
+      </div>
   );
 };
 
