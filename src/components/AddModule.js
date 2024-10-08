@@ -29,25 +29,31 @@ const AddModule = () => {
     return tempDiv.innerText;
   };
 
-  // Custom image handler for ReactQuill
-  const imageHandler = () => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
+  // Custom image handler for ReactQuill to handle multiple images
+const imageHandler = () => {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'image/*');
+  input.setAttribute('multiple', 'multiple'); // Allow multiple file selection
+  input.click();
 
-    input.onchange = async () => {
-      const file = input.files[0];
+  input.onchange = async () => {
+    const files = Array.from(input.files); // Get multiple files
+    const editor = quillRef.current.getEditor();
+    const range = editor.getSelection();
+
+    files.forEach(async (file) => {
       if (file) {
         const uploadedImageUrl = await uploadFile(file, 'Module');
-        setImageUrl(uploadedImageUrl); // Correctly set the imageUrl state
-        
-        const editor = quillRef.current.getEditor();
-        const range = editor.getSelection();
-        editor.insertEmbed(range.index, 'image', uploadedImageUrl); // Insert image in editor
+        setImageUrl((prevState) => [...prevState, uploadedImageUrl]); // Store all image URLs
+
+        // Insert the uploaded image URL into the editor
+        editor.insertEmbed(range.index, 'image', uploadedImageUrl);
       }
-    };
+    });
   };
+};
+
 
   // Function to upload file to Firebase Storage and return the download URL
   const uploadFile = async (file, folder) => {
