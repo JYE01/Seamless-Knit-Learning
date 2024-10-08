@@ -95,7 +95,7 @@ const imageHandler = () => {
       // Upload the entire module with all subtopics to Firestore
       await addDoc(collection(db, 'Module'), {
         name: name,
-        progress: progress,
+        progress: 0,
         subtopics: subtopics, 
       });
 
@@ -148,14 +148,14 @@ const imageHandler = () => {
         className="mb-4 p-2 border border-gray-300 rounded-md w-full"
       />
 
-      {/* Progress Field */}
+      {/* Progress Field
       <input
         type="number"
         value={progress}
         onChange={(e) => setProgress(e.target.value)}
         placeholder="Progress"
         className="mb-4 p-2 border border-gray-300 rounded-md w-full"
-      />
+      /> */}
 
       {/* Topic Name Field */}
       <input

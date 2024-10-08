@@ -3,7 +3,7 @@ import Firebase from '../Firebase';
 import { collection, query, getDocs, getFirestore } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
-const AdminModule = () => {
+const Module = () => {
     const [modules, setModules] = useState([]);
     const [openModules, setOpenModules] = useState({}); // Track which modules are open
     const db = getFirestore(Firebase);
@@ -84,4 +84,4 @@ const AdminModule = () => {
     );
 }
 
-export default AdminModule;
+export default Module;
