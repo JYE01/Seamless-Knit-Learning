@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { storage, db } from '../Firebase';
-import { collection, query, getDocs, getFirestore, addDoc, deleteDoc, doc } from 'firebase/firestore'; 
+import { collection, addDoc } from 'firebase/firestore'; 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
-import ReactQuill from 'react-quill'; // For text formatting
-import 'react-quill/dist/quill.snow.css'; // Import Quill CSS for text formatting
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const AddModule = () => {
   const [name, setName] = useState('');
   const [progress, setProgress] = useState(0);
   const [subtopics, setSubtopics] = useState([]);
-  const [topicName, setTopicName] = useState(''); // New field for topic name
-  const [paragraph, setParagraph] = useState(''); // This will be added to subtopics as content
-  const [image, setImage] = useState(null); // For each subtopic's image
-  const [pdf, setPdf] = useState(null); // For each subtopic's PDF
+  const [topicName, setTopicName] = useState('');
+  const [paragraph, setParagraph] = useState('');
+  const [pdf, setPdf] = useState('');
   const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(''); // Update this to useState correctly
+  const quillRef = useRef(null);
 
   const handleFileChange = (e, setFile) => {
     if (e.target.files[0]) {
@@ -25,42 +26,56 @@ const AddModule = () => {
   const stripHtmlTags = (html) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
-    return tempDiv.innerText; // Returns the plain text
+    return tempDiv.innerText;
   };
 
+  // Custom image handler for ReactQuill
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (file) {
+        const uploadedImageUrl = await uploadFile(file, 'Module');
+        setImageUrl(uploadedImageUrl); // Correctly set the imageUrl state
+        
+        const editor = quillRef.current.getEditor();
+        const range = editor.getSelection();
+        editor.insertEmbed(range.index, 'image', uploadedImageUrl); // Insert image in editor
+      }
+    };
+  };
+
+  // Function to upload file to Firebase Storage and return the download URL
   const uploadFile = async (file, folder) => {
     const storageRef = ref(storage, `${folder}/${file.name}`);
     const snapshot = await uploadBytes(storageRef, file);
-    return await getDownloadURL(snapshot.ref); // Return the download URL
+    return await getDownloadURL(snapshot.ref);
   };
 
   const addSubtopic = async () => {
-    let imageUrl = '';
     let pdfUrl = '';
 
-    if (image) {
-      imageUrl = await uploadFile(image, 'Module'); // Upload image to "Module" folder
-    }
-
     if (pdf) {
-      pdfUrl = await uploadFile(pdf, 'PDF'); // Upload PDF to "PDF" folder
+      pdfUrl = await uploadFile(pdf, 'PDF');
     }
 
-    // Add the subtopic with the topic name, paragraph (content), image, and PDF
     if (topicName.trim() && paragraph.trim()) {
       const plainTextContent = stripHtmlTags(paragraph);
       const newSubtopic = {
-        topicName, // Store topic name
-        content: plainTextContent, // Store paragraph as content
-        imageUrl: imageUrl || '', // Only add image URL if it exists
-        pdfUrl: pdfUrl || '', // Only add PDF URL if it exists
+        topicName,
+        content: plainTextContent,
+        imageUrl: imageUrl || '', 
+        pdfUrl: pdfUrl || '',
       };
-
       setSubtopics([...subtopics, newSubtopic]);
-      setTopicName(''); // Clear topic name
-      setParagraph(''); // Clear the paragraph after adding
-      setImage(null); // Clear the image after adding
-      setPdf(null); // Clear the PDF after adding
+      setTopicName('');
+      setParagraph('');
+      setImageUrl(''); 
+      setPdf('');
     } else {
       alert('Please fill in both the topic name and content!');
     }
@@ -86,6 +101,33 @@ const AddModule = () => {
 
     setLoading(false);
   };
+
+  // ReactQuill Editor with image handler memoized to prevent unnecessary re-renders
+  const memoizedQuill = useMemo(() => (
+    <ReactQuill
+      ref={quillRef}
+      value={paragraph}
+      onChange={setParagraph}
+      placeholder="Write your content here..."
+      className="mb-4"
+      modules={{
+        toolbar: {
+          container: [
+            [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+            [{ size: [] }],
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+            ['link', 'image', 'video'],
+            [{ 'align': [] }],
+            ['clean'],
+          ],
+          handlers: {
+            image: imageHandler,
+          },
+        },
+      }}
+    />
+  ), []); 
 
   return (
     <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-15xl mx-auto" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto' }}>
@@ -118,35 +160,8 @@ const AddModule = () => {
         className="mb-4 p-2 border border-gray-300 rounded-md w-full"
       />
 
-      {/* Paragraph Editor (which will be added as subtopic content) */}
-      <ReactQuill
-        value={paragraph}
-        onChange={setParagraph}
-        placeholder="Write your content here..."
-        className="mb-4"
-        modules={{
-          toolbar: [
-            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-            [{ size: [] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-            ['link', 'image'],
-            [{ 'align': [] }],
-            ['clean']
-          ],
-        }}
-      />
-
-      {/* Image Upload */}
-      <div className="mb-4">
-        <label className="block text-gray-700">Upload Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleFileChange(e, setImage)}
-          className="mt-2 p-2 border border-gray-300 rounded-md w-full"
-        />
-      </div>
+      {/* ReactQuill Editor */}
+      {memoizedQuill}
 
       {/* PDF Upload */}
       <div className="mb-4">
