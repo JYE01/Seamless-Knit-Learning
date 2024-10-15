@@ -7,10 +7,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AdminModule = ({ removeMode }) => {
     const [modules, setModules] = useState([]);
-    const [openModules, setOpenModules] = useState({}); // Track which modules are open
+    const [openModules, setOpenModules] = useState({}); 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [moduleToDelete, setModuleToDelete] = useState(null); // To hold the module ID for deletion
-    const [subtopicToDelete, setSubtopicToDelete] = useState({ moduleId: null, subIndex: null }); // Store subtopic info for deletion
+    const [moduleToDelete, setModuleToDelete] = useState(null); 
+    const [subtopicToDelete, setSubtopicToDelete] = useState({ moduleId: null, subIndex: null }); 
     const db = getFirestore(Firebase);
     const navigate = useNavigate();
 
@@ -55,12 +55,12 @@ const AdminModule = ({ removeMode }) => {
     const handleDeleteModule = async () => {
         try {
             await deleteDoc(doc(db, 'Module', moduleToDelete));
-            setModules(modules.filter(module => module.id !== moduleToDelete)); // Update UI after deletion
+            setModules(modules.filter(module => module.id !== moduleToDelete));
             toast.success("Module deleted successfully!", {
                 position: "top-center",
             });
-            setShowDeleteModal(false); // Close the modal
-            setModuleToDelete(null); // Reset the moduleToDelete state
+            setShowDeleteModal(false); 
+            setModuleToDelete(null); 
         } catch (error) {
             console.error("Error deleting module: ", error);
             toast.error("Error deleting module!", {
@@ -79,12 +79,10 @@ const AdminModule = ({ removeMode }) => {
 
             if (moduleSnap.exists()) {
                 const moduleData = moduleSnap.data();
-                const updatedSubtopics = moduleData.subtopics.filter((_, index) => index !== subIndex); // Remove subtopic by index
+                const updatedSubtopics = moduleData.subtopics.filter((_, index) => index !== subIndex); 
 
-                // Update the Firestore document with the new subtopics array
                 await updateDoc(moduleDocRef, { subtopics: updatedSubtopics });
 
-                // Update the local state
                 setModules(prevModules =>
                     prevModules.map(module =>
                         module.id === moduleId ? { ...module, subtopics: updatedSubtopics } : module
@@ -94,8 +92,8 @@ const AdminModule = ({ removeMode }) => {
                 toast.success("Subtopic deleted successfully!", {
                     position: "top-center",
                 });
-                setShowDeleteModal(false); // Close the modal
-                setSubtopicToDelete({ moduleId: null, subIndex: null }); // Reset subtopicToDelete state
+                setShowDeleteModal(false); 
+                setSubtopicToDelete({ moduleId: null, subIndex: null }); 
             }
         } catch (error) {
             console.error("Error deleting subtopic: ", error);

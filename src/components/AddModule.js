@@ -1,19 +1,19 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { storage, db } from '../Firebase';
-import { collection, addDoc } from 'firebase/firestore'; 
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import ReactQuill from 'react-quill';
+import ResizeImage from './ResizeImage'; // Import your custom ResizeImage component
 import 'react-quill/dist/quill.snow.css';
 
 const AddModule = () => {
   const [name, setName] = useState('');
-  const [progress, setProgress] = useState(0);
   const [subtopics, setSubtopics] = useState([]);
   const [topicName, setTopicName] = useState('');
   const [paragraph, setParagraph] = useState('');
   const [pdf, setPdf] = useState('');
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(''); // Update this to useState correctly
+  const [imageUrls, setImageUrls] = useState([]); 
   const quillRef = useRef(null);
 
   const handleFileChange = (e, setFile) => {
@@ -22,38 +22,33 @@ const AddModule = () => {
     }
   };
 
-  // Function to strip HTML tags and get plain text
-  const stripHtmlTags = (html) => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    return tempDiv.innerText;
+  // Custom image handler for ReactQuill to handle image uploads
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.setAttribute('multiple', 'multiple');
+    input.click();
+
+    input.onchange = async () => {
+      const files = Array.from(input.files);
+      const editor = quillRef.current.getEditor();
+      const range = editor.getSelection();
+
+      files.forEach(async (file) => {
+        if (file) {
+          const uploadedImageUrl = await uploadFile(file, 'Module');
+          setImageUrl((prevState) => [...prevState, uploadedImageUrl]); // Store all image URLs
+          const resizeImageHtml = `
+            <div class="resize-container">
+              <resize-image src="${uploadedImageUrl}" alt="uploaded-image"></resize-image>
+            </div>
+          `;
+        editor.clipboard.dangerouslyPasteHTML(range.index, resizeImageHtml);
+        }
+      });
+    };
   };
-
-  // Custom image handler for ReactQuill to handle multiple images
-const imageHandler = () => {
-  const input = document.createElement('input');
-  input.setAttribute('type', 'file');
-  input.setAttribute('accept', 'image/*');
-  input.setAttribute('multiple', 'multiple'); // Allow multiple file selection
-  input.click();
-
-  input.onchange = async () => {
-    const files = Array.from(input.files); // Get multiple files
-    const editor = quillRef.current.getEditor();
-    const range = editor.getSelection();
-
-    files.forEach(async (file) => {
-      if (file) {
-        const uploadedImageUrl = await uploadFile(file, 'Module');
-        setImageUrl((prevState) => [...prevState, uploadedImageUrl]); // Store all image URLs
-
-        // Insert the uploaded image URL into the editor
-        editor.insertEmbed(range.index, 'image', uploadedImageUrl);
-      }
-    });
-  };
-};
-
 
   // Function to upload file to Firebase Storage and return the download URL
   const uploadFile = async (file, folder) => {
@@ -70,17 +65,16 @@ const imageHandler = () => {
     }
 
     if (topicName.trim() && paragraph.trim()) {
-      const plainTextContent = stripHtmlTags(paragraph);
       const newSubtopic = {
         topicName,
-        content: plainTextContent,
-        imageUrl: imageUrl || '', 
+        content: paragraph,
+        imageUrls: imageUrls || [],
         pdfUrl: pdfUrl || '',
       };
       setSubtopics([...subtopics, newSubtopic]);
       setTopicName('');
       setParagraph('');
-      setImageUrl(''); 
+      setImageUrls([]);
       setPdf('');
     } else {
       alert('Please fill in both the topic name and content!');
@@ -92,11 +86,9 @@ const imageHandler = () => {
     setLoading(true);
 
     try {
-      // Upload the entire module with all subtopics to Firestore
       await addDoc(collection(db, 'Module'), {
         name: name,
-        progress: 0,
-        subtopics: subtopics, 
+        subtopics: subtopics,
       });
 
       alert('Content uploaded successfully!');
@@ -108,7 +100,6 @@ const imageHandler = () => {
     setLoading(false);
   };
 
-  // ReactQuill Editor with image handler memoized to prevent unnecessary re-renders
   const memoizedQuill = useMemo(() => (
     <ReactQuill
       ref={quillRef}
@@ -133,10 +124,10 @@ const imageHandler = () => {
         },
       }}
     />
-  ), []); 
+  ), []);
 
   return (
-    <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-15xl mx-auto" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto' }}>
+    <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-4xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4">Upload Learning Content</h2>
       
       {/* Name Field */}
@@ -147,15 +138,6 @@ const imageHandler = () => {
         placeholder="Module Name"
         className="mb-4 p-2 border border-gray-300 rounded-md w-full"
       />
-
-      {/* Progress Field
-      <input
-        type="number"
-        value={progress}
-        onChange={(e) => setProgress(e.target.value)}
-        placeholder="Progress"
-        className="mb-4 p-2 border border-gray-300 rounded-md w-full"
-      /> */}
 
       {/* Topic Name Field */}
       <input
@@ -196,8 +178,21 @@ const imageHandler = () => {
             <li key={index} className="text-gray-600">
               <div>Topic Name: {subtopic.topicName}</div>
               <div>Content: {subtopic.content}</div>
-              {subtopic.imageUrl && <div>Image: <a href={subtopic.imageUrl} target="_blank" rel="noopener noreferrer">View Image</a></div>}
-              {subtopic.pdfUrl && <div>PDF: <a href={subtopic.pdfUrl} target="_blank" rel="noopener noreferrer">View PDF</a></div>}
+              {subtopic.imageUrls && subtopic.imageUrls.length > 0 && (
+                <div>
+                  Images:
+                  {subtopic.imageUrls.map((url, idx) => (
+                    <a key={idx} href={url} target="_blank" rel="noopener noreferrer">
+                      View Image {idx + 1}
+                    </a>
+                  ))}
+                </div>
+              )}
+              {subtopic.pdfUrl && (
+                <div>
+                  PDF: <a href={subtopic.pdfUrl} target="_blank" rel="noopener noreferrer">View PDF</a>
+                </div>
+              )}
             </li>
           ))}
         </ul>
