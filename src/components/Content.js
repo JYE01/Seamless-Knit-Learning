@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Firebase from '../Firebase';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import "./Content.css"
 
 const Content = () => {
   const [subtopicContent, setSubtopicContent] = useState(null);
@@ -62,6 +63,7 @@ const Content = () => {
       const prevTopicKey = topicKey - 1;
       localStorage.setItem("topicKey", prevTopicKey); // Store in localStorage for refresh safety
       setTopicKey(prevTopicKey); // Update topicKey to move to the previous subtopic
+      setImageUrl("");
     }
   };
 
@@ -70,6 +72,7 @@ const Content = () => {
       const nextTopicKey = topicKey + 1;
       localStorage.setItem("topicKey", nextTopicKey); // Store in localStorage for refresh safety
       setTopicKey(nextTopicKey); // Update topicKey to move to the next subtopic
+      setImageUrl("");
     }
   };
 
@@ -80,28 +83,7 @@ const Content = () => {
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-6xl mx-auto overflow-y-auto" style={{ maxHeight: '90vh' }}>
       <h2 className="text-2xl font-semibold mb-4">{subtopicContent.topicName}</h2>
-      <div className="mb-4">{subtopicContent.content}</div>
-
-      {/* Display multiple images */}
-      {imageUrl.length > 0 ? (
-        <div className="my-8 flex justify-center flex-wrap">
-          {imageUrl.map((url, index) => (
-            <div key={index} className="p-2">
-              <img src={url} alt={`Firebase ${index}`} className="max-w-full h-auto" />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <></>
-      )}
-
-      {subtopicContent.pdfUrl && (
-        <div className="mt-4">
-          <a href={subtopicContent.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-            View PDF
-          </a>
-        </div>
-      )}
+      <div className="content"dangerouslySetInnerHTML={{ __html: subtopicContent.content }}></div> 
       
       <div className="mt-8 flex justify-between">
         {topicKey > 0 && (

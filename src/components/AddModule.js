@@ -54,6 +54,26 @@ const imageHandler = () => {
   };
 };
 
+const pdfHandler = () => {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'application/pdf'); // Accept only PDF files
+  input.click();
+
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (file) {
+      const uploadedPdfUrl = await uploadFile(file, 'PDFs');
+      const editor = quillRef.current.getEditor();
+      const range = editor.getSelection();
+
+      // Insert a link to the uploaded PDF in the content
+      editor.insertText(range.index, file.name);
+      editor.formatText(range.index, range.index + file.name.length, { link: uploadedPdfUrl });
+    }
+  };
+};
+
 
   // Function to upload file to Firebase Storage and return the download URL
   const uploadFile = async (file, folder) => {
@@ -64,28 +84,26 @@ const imageHandler = () => {
 
   const addSubtopic = async () => {
     let pdfUrl = '';
-
+  
     if (pdf) {
       pdfUrl = await uploadFile(pdf, 'PDF');
     }
-
+  
+    // Ensure each subtopic has its own image URL
     if (topicName.trim() && paragraph.trim()) {
-      const plainTextContent = stripHtmlTags(paragraph);
       const newSubtopic = {
         topicName,
-        content: plainTextContent,
-        imageUrl: imageUrl || '', 
-        pdfUrl: pdfUrl || '',
+        content: paragraph,
       };
-      setSubtopics([...subtopics, newSubtopic]);
+  
+      setSubtopics([...subtopics, newSubtopic]); // Add subtopic to the list
       setTopicName('');
       setParagraph('');
-      setImageUrl(''); 
-      setPdf('');
     } else {
       alert('Please fill in both the topic name and content!');
     }
   };
+  
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -123,11 +141,12 @@ const imageHandler = () => {
             [{ size: [] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-            ['link', 'image', 'video'],
+            ['link', 'image','video'],
             [{ 'align': [] }],
             ['clean'],
           ],
           handlers: {
+            link: pdfHandler,
             image: imageHandler,
           },
         },
@@ -148,15 +167,6 @@ const imageHandler = () => {
         className="mb-4 p-2 border border-gray-300 rounded-md w-full"
       />
 
-      {/* Progress Field
-      <input
-        type="number"
-        value={progress}
-        onChange={(e) => setProgress(e.target.value)}
-        placeholder="Progress"
-        className="mb-4 p-2 border border-gray-300 rounded-md w-full"
-      /> */}
-
       {/* Topic Name Field */}
       <input
         type="text"
@@ -168,17 +178,6 @@ const imageHandler = () => {
 
       {/* ReactQuill Editor */}
       {memoizedQuill}
-
-      {/* PDF Upload */}
-      <div className="mb-4">
-        <label className="block text-gray-700">Upload PDF</label>
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={(e) => handleFileChange(e, setPdf)}
-          className="mt-2 p-2 border border-gray-300 rounded-md w-full"
-        />
-      </div>
 
       {/* Add Subtopic Button */}
       <button
@@ -196,8 +195,6 @@ const imageHandler = () => {
             <li key={index} className="text-gray-600">
               <div>Topic Name: {subtopic.topicName}</div>
               <div>Content: {subtopic.content}</div>
-              {subtopic.imageUrl && <div>Image: <a href={subtopic.imageUrl} target="_blank" rel="noopener noreferrer">View Image</a></div>}
-              {subtopic.pdfUrl && <div>PDF: <a href={subtopic.pdfUrl} target="_blank" rel="noopener noreferrer">View PDF</a></div>}
             </li>
           ))}
         </ul>
