@@ -7,6 +7,7 @@ import 'react-quill/dist/quill.snow.css';
 import ImageResize from 'quill-image-resize-module-react';
 import { Quill } from 'react-quill';
 
+
 Quill.register('modules/imageResize', ImageResize);
 
 const AddModule = () => {
