@@ -4,7 +4,10 @@ import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import ResizeImage from './ResizeImage';
+import ImageResize from 'quill-image-resize-module-react';
+import { Quill } from 'react-quill';
+
+Quill.register('modules/imageResize', ImageResize);
 
 const AddModule = () => {
   const [name, setName] = useState('');
@@ -14,79 +17,46 @@ const AddModule = () => {
   const [paragraph, setParagraph] = useState('');
   const [pdf, setPdf] = useState('');
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(''); 
+  const [imageUrl, setImageUrl] = useState(''); // Update this to useState correctly
   const quillRef = useRef(null);
-  const imageRef = useRef(null);
-  const aspectRatio = useRef(1);
-  const isResizing = useRef(false);
 
+  const handleFileChange = (e, setFile) => {
+    if (e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  // Function to strip HTML tags and get plain text
+  const stripHtmlTags = (html) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.innerText;
+  };
+
+  // Custom image handler for ReactQuill to handle multiple images
 const imageHandler = () => {
   const input = document.createElement('input');
   input.setAttribute('type', 'file');
   input.setAttribute('accept', 'image/*');
-  input.setAttribute('multiple', 'multiple'); 
+  input.setAttribute('multiple', 'multiple'); // Allow multiple file selection
   input.click();
 
   input.onchange = async () => {
-    const files = Array.from(input.files); 
+    const files = Array.from(input.files); // Get multiple files
     const editor = quillRef.current.getEditor();
     const range = editor.getSelection();
 
     files.forEach(async (file) => {
       if (file) {
         const uploadedImageUrl = await uploadFile(file, 'Module');
-        setImageUrl((prevState) => [...prevState, uploadedImageUrl]); 
-        const resizeImageHtml = `
-          <div class="image-container" style="display: inline-block; position: relative;">
-            <img
-              src="${uploadedImageUrl}"
-              alt="uploaded-image"
-              style="max-width: 100%; height: auto; border: 2px solid red; cursor: nwse-resize;"
-              class="resizable-image"
-            />
-            <div
-              class="resize-handle"
-              style="width: 15px; height: 15px; background: red; position: absolute; right: 0; bottom: 0; cursor: nwse-resize; z-index: 9999;"
-            ></div>
-          </div>`;
-        // editor.insertEmbed(range.index, resizeImageHtml);
-        editor.clipboard.dangerouslyPasteHTML(range.index, resizeImageHtml);
-        
-         // Attach event listeners to the newly inserted elements
-         const container = editor.root.querySelector('.image-container');
-         if (container) {
-           const resizeHandle = container.querySelector('.resize-handle');
-           if (resizeHandle) {
-             resizeHandle.addEventListener('mousedown', startResize);
-           }
-         }
+        setImageUrl((prevState) => [...prevState, uploadedImageUrl]); // Store all image URLs
+
+        // Insert the uploaded image URL into the editor
+        editor.insertEmbed(range.index, 'image', uploadedImageUrl);
       }
     });
   };
 };
-
-const startResize = (e) => {
-  e.preventDefault();  // Prevent text selection
-  const imageElement = e.target.closest('.image-container').querySelector('.resizable-image');
-  const rect = imageElement.getBoundingClientRect();
-  const aspectRatio = rect.width / rect.height;
-  
-  window.addEventListener('mousemove', resize);
-  window.addEventListener('mouseup', stopResize);
-
-  const resize = (e) => {
-    const newWidth = e.clientX - imageElement.getBoundingClientRect().left;
-    const newHeight = newWidth / aspectRatio;
-    imageElement.style.width = `${newWidth}px`;
-    imageElement.style.height = `${newHeight}px`;
-  };
-
-  const stopResize = () => {
-    window.removeEventListener('mousemove', resize);
-    window.removeEventListener('mouseup', stopResize);
-  };
-};
-
 
 const pdfHandler = () => {
   const input = document.createElement('input');
@@ -129,7 +99,8 @@ const pdfHandler = () => {
         topicName,
         content: paragraph,
       };
-      setSubtopics([...subtopics, newSubtopic]); 
+  
+      setSubtopics([...subtopics, newSubtopic]); // Add subtopic to the list
       setTopicName('');
       setParagraph('');
     } else {
@@ -137,6 +108,7 @@ const pdfHandler = () => {
     }
   };
   
+
   const handleUpload = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -182,6 +154,10 @@ const pdfHandler = () => {
             image: imageHandler,
           },
         },
+        imageResize: {
+          parchment: Quill.import('parchment'),
+          modules: ['Resize', 'DisplaySize']
+       }
       }}
     />
   ), []); 

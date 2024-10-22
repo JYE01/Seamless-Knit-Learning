@@ -44,6 +44,12 @@ const Navbar = () => {
     { name: "Search", path: "#" } // Change this path as needed
   ];
 
+  const handleSignOut = async () => {
+      localStorage.removeItem("Email");
+      localStorage.removeItem("Name");
+      window.location.replace("/login");
+  };
+
   return (
     <div className="w-1/6 bg-white p-6 border-r space-y-8">
       <div className="relative account" ref={dropdownRef}>
@@ -63,7 +69,7 @@ const Navbar = () => {
             <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-cog"></i> Manage Account
             </Link>
-            <Link to="/login" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
+            <Link onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-sign-out-alt"></i> Sign Out
             </Link>
           </div>
