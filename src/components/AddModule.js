@@ -4,10 +4,10 @@ import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import ImageResize from 'quill-image-resize-module-react';
+// import ImageResize from 'quill-image-resize-module-react';
 import { Quill } from 'react-quill';
 
-Quill.register('modules/imageResize', ImageResize);
+// Quill.register('modules/imageResize', ImageResize);
 
 const AddModule = () => {
   const [name, setName] = useState('');
@@ -154,10 +154,10 @@ const pdfHandler = () => {
             image: imageHandler,
           },
         },
-        imageResize: {
-          parchment: Quill.import('parchment'),
-          modules: ['Resize', 'DisplaySize']
-       }
+      //   imageResize: {
+      //     parchment: Quill.import('parchment'),
+      //     modules: ['Resize', 'DisplaySize']
+      //  }
       }}
     />
   ), []); 
