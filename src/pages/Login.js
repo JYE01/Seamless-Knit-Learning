@@ -80,7 +80,7 @@ function LogIn() {
 
 
   const handleSubmit = (e) => {
-    if (email.includes(".adm")) {
+    if (email.includes(".adm@")) {
       handleAdminLogin(e); // Call admin login function
     } else {
       handleLogIn(e); // Call regular user login function

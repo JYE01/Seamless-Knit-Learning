@@ -1,143 +1,184 @@
 /* General content styling */
 .content {
-    font-family: 'Arial', sans-serif; /* Apply to all content */
-    color: #333;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Make sure all elements within .content inherit the font-family */
-  .content * {
-    font-family: inherit; /* Ensures all child elements inherit the font-family */
-  }
-  
-  /* Headings */
-  .content h1, .content h2, .content h3, .content h4, .content h5, .content h6 {
-    font-family: inherit;
-    font-weight: bold;
-    color: #222;
-  }
-  
-  .content h1 {
-    font-size: 2.5rem;
-  }
-  
-  .content h2 {
-    font-size: 2rem;
-  }
-  
-  .content h3 {
-    font-size: 1.75rem;
-  }
-  
-  /* Paragraphs */
-  .content p {
-    font-family: inherit;
-    font-size: 1rem;
-    margin-bottom: 1.25rem;
-  }
-  
-  /* Lists with indentation */
-  .content ul, .content ol {
-    font-family: inherit;
-    padding-left: 2rem; /* Increase left padding for indent */
-    margin-bottom: 1.25rem;
-  }
-  
-  /* Nested lists should be further indented */
-  .content ul ul, .content ol ol, .content ul ol, .content ol ul {
-    padding-left: 2rem; /* Additional indent for nested lists */
-    margin-bottom: 0;   /* Remove extra space between nested lists */
-  }
-  
-  .content li {
-    margin-bottom: 0.5rem;
-  }
-  
-  /* Indentation for block-level elements like blockquote */
-  .content blockquote {
-    font-family: inherit;
-    border-left: 5px solid #ccc;
-    padding-left: 1rem;
-    margin-left: 0;
-    color: #666;
-    font-style: italic;
-  }
-  
-  /* Lists with Quill's indent classes */
-  .content .ql-indent-1 {
-    padding-left: 2rem;
-  }
-  .content .ql-indent-2 {
-    padding-left: 4rem;
-  }
-  .content .ql-indent-3 {
-    padding-left: 6rem;
-  }
-  .content .ql-indent-4 {
-    padding-left: 8rem;
-  }
-  .content .ql-indent-5 {
-    padding-left: 10rem;
-  }
-  .content .ql-indent-6 {
-    padding-left: 10rem;
-  }
-  .content .ql-indent-7 {
-    padding-left: 10rem;
-  }
-  .content .ql-indent-8 {
-    padding-left: 10rem;
-  }
-  
-  
-  /* Links */
-  .content a {
-    font-family: inherit;
-    color: blue;
-    text-decoration: underline;
-    font-weight: bold;
-  }
-  
-  .content a:hover {
-    color: darkblue;
-  }
-  
-  /* Bold and strong text */
-  .content strong, .content b {
-    font-family: inherit;
-    font-weight: bold;
-    color: #222;
-  }
-  
-  /* Italic text */
-  .content em, .content i {
-    font-family: inherit;
-    font-style: italic;
-  }
-  
-  /* Code and Preformatted Text */
-  .content code, .content pre {
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #f4f4f4;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-  }
-  
-  /* Tables */
-  .content table {
-    font-family: inherit;
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Horizontal rules */
-  .content hr {
-    font-family: inherit;
-    border: 0;
-    height: 1px;
-    background-color: #ddd;
-    margin: 2rem 0;
-  }
-  
+  font-family: 'Arial', sans-serif; /* Apply to all content */
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* Make sure all elements within .content inherit the font-family */
+.content * {
+  font-family: inherit; /* Ensures all child elements inherit the font-family */
+}
+
+/* Headings */
+.content h1, .content h2, .content h3, .content h4, .content h5, .content h6 {
+  font-family: inherit;
+  font-weight: bold;
+  color: #222;
+}
+
+.content h1 {
+  font-size: 2.5rem;
+}
+
+.content h2 {
+  font-size: 2rem;
+}
+
+.content h3 {
+  font-size: 1.75rem;
+}
+
+/* Paragraphs */
+.content p {
+  font-family: inherit;
+  font-size: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Lists with indentation */
+.content ul, .content ol {
+  font-family: inherit;
+  padding-left: 2rem; /* Increase left padding for indent */
+  margin-bottom: 1.25rem;
+}
+
+/* Nested lists should be further indented */
+.content ul ul, .content ol ol, .content ul ol, .content ol ul {
+  padding-left: 2rem; /* Additional indent for nested lists */
+  margin-bottom: 0;   /* Remove extra space between nested lists */
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+}
+
+/* Indentation for block-level elements like blockquote */
+.content blockquote {
+  font-family: inherit;
+  border-left: 5px solid #ccc;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #666;
+  font-style: italic;
+}
+
+/* Quill-specific indentation classes */
+.content .ql-indent-1 {
+  padding-left: 2rem;
+}
+
+.content .ql-indent-2 {
+  padding-left: 4rem;
+}
+
+.content .ql-indent-3 {
+  padding-left: 6rem;
+}
+
+.content .ql-indent-4 {
+  padding-left: 8rem;
+}
+
+/* Links */
+.content a {
+  font-family: inherit;
+  color: blue;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.content a:hover {
+  color: darkblue;
+}
+
+/* Bold and strong text */
+.content strong, .content b {
+  font-family: inherit;
+  font-weight: bold;
+  color: #222;
+}
+
+/* Italic text */
+.content em, .content i {
+  font-family: inherit;
+  font-style: italic;
+}
+
+/* Code and Preformatted Text */
+.content code, .content pre {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #f4f4f4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* Quill code blocks */
+.content pre.ql-syntax {
+  background-color: #f4f4f4;
+  padding: 1rem;
+  border-radius: 5px;
+  white-space: pre-wrap;
+}
+
+/* Tables */
+.content table {
+  font-family: inherit;
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ddd;
+}
+
+.content th, .content td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+/* Horizontal rules */
+.content hr {
+  border: 0;
+  height: 1px;
+  background-color: #ddd;
+  margin: 2rem 0;
+}
+
+/* Quill toolbar formatting */
+.ql-toolbar {
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+/* Quill editor content */
+.ql-container {
+  border: 1px solid #ddd;
+  border-top: none;
+  min-height: 300px;
+}
+
+/* Styling for images inserted via Quill */
+.content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
+}
+
+/* Styling for video embeds */
+.content iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
+}
+
+/* Specific styles for Quill blockquote */
+.ql-blockquote {
+  border-left: 5px solid #ccc;
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  color: #666;
+  font-style: italic;
+}

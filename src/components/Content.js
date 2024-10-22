@@ -15,6 +15,9 @@ const Content = () => {
   const [moduleId, setModuleId] = useState(localStorage.getItem("moduleId"));
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
+  const email = localStorage.getItem("Email");;
+  
+  
 
   useEffect(() => {
     if (moduleId && topicKey !== null) {
@@ -101,7 +104,11 @@ const Content = () => {
 
   const handleFinish = () => {
     updateProgressInFirebase(100);
-    navigate('/Main/Dashboard');
+    if(email.includes('.adm@')){
+     navigate("/Admin/Dashboard");
+    } else {
+     navigate("/Main/Dashboard");
+    }
   };
 
   if (!subtopicContent) {
