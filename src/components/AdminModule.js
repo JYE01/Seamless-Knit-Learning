@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Firebase from '../Firebase'; 
-import { collection, query, getDocs, getFirestore, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, getFirestore, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,9 +10,11 @@ const AdminModule = ({ removeMode }) => {
     const [openModules, setOpenModules] = useState({}); // Track which modules are open
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [moduleToDelete, setModuleToDelete] = useState(null); // To hold the module ID for deletion
+    const [userProgress, setUserProgress] = useState({});
     const [subtopicToDelete, setSubtopicToDelete] = useState({ moduleId: null, subIndex: null }); // Store subtopic info for deletion
     const db = getFirestore(Firebase);
     const navigate = useNavigate();
+    const email = localStorage.getItem("Email");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,6 +22,22 @@ const AdminModule = ({ removeMode }) => {
             const moduleSnapShot = await getDocs(moduleQuery);
             const moduleData = moduleSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setModules([...moduleData]);
+
+            const userQuery = query(collection(db, 'Users'), where('Email', '==', email));
+            const userSnapShot = await getDocs(userQuery);
+
+            if (userSnapShot.empty) {
+                console.error("No user found with the provided email.");
+                return;
+            }
+
+            const userDoc = userSnapShot.docs[0];
+            const userData = userDoc.data();
+
+            if (userData.progress) {
+                setUserProgress(userData.progress);
+                console.log(userProgress);  
+            }
         };
         fetchData();
     }, [db]);
@@ -135,11 +153,11 @@ const AdminModule = ({ removeMode }) => {
                     <div className="h-3 bg-gray-300 rounded-full">
                         <div
                             className="h-3 bg-gray-700 rounded-full"
-                            style={{ width: `${module.progress}%` }}
+                            style={{ width: `${userProgress[module.id] || 0}%` }}
                         ></div>
                     </div>
                     <p className="text-sm text-gray-500 mt-2">
-                        Progress: {module.progress}%
+                        Progress: {userProgress[module.id] || 0}%
                     </p>
 
                     {/* Conditionally render subtopics */}

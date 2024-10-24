@@ -2,17 +2,14 @@ import React, { useState, useMemo, useRef } from 'react';
 import { storage, db } from '../Firebase';
 import { collection, addDoc } from 'firebase/firestore'; 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
-import ReactQuill from 'react-quill';
+import ReactQuill, {Quill} from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ImageResize from 'quill-image-resize-module-react';
-import { Quill } from 'react-quill';
-
 
 Quill.register('modules/imageResize', ImageResize);
 
 const AddModule = () => {
   const [name, setName] = useState('');
-  const [progress, setProgress] = useState(0);
   const [subtopics, setSubtopics] = useState([]);
   const [topicName, setTopicName] = useState('');
   const [paragraph, setParagraph] = useState('');
@@ -118,7 +115,6 @@ const pdfHandler = () => {
       // Upload the entire module with all subtopics to Firestore
       await addDoc(collection(db, 'Module'), {
         name: name,
-        progress: 0,
         subtopics: subtopics, 
       });
 
