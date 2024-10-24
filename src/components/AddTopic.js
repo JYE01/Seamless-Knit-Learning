@@ -1,7 +1,7 @@
 import React from 'react';
 
-const AddTopic = ({ showModal, closeModal, handleAddTopic, newTitle, setNewTitle, newDescription, setNewDescription }) => {
-  if (!showModal) return null; // Don't render the modal if `showModal` is false
+const AddTopic = ({ showTopicModal, closeModal, handleAddTopic, newTitle, setNewTitle, newDescription, setNewDescription }) => {
+  if (!showTopicModal) return null; // Don't render the modal if `showModal` is false
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">

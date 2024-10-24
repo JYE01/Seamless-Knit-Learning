@@ -8,11 +8,14 @@ import { useNavigate } from 'react-router-dom';
 
 const Discuss = () => {
   const [discussions, setDiscussions] = useState([]);
-  const [filteredDiscussions, setFilteredDiscussions] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [votes, setVotes] = useState([]);
+  const [filteredDiscussions, setFilteredDiscussions] = useState([]); // Use this for the filtered discussions
+  const [showTopicModal, setShowTopicModal] = useState(false);
+  const [showVoteModal, setShowVoteModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [filterOption, setFilterOption] = useState('All Discussions');
+  const [discussFilterOption, setDiscussFilterOption] = useState('All Discussions'); // For Discuss filtering
+  const [voteFilterOption, setVoteFilterOption] = useState('All Vote'); // For Vote filtering
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [discussionToDelete, setDiscussionToDelete] = useState(null);
   const db = getFirestore(Firebase);
@@ -20,6 +23,7 @@ const Discuss = () => {
   const name = localStorage.getItem("Name");
   const email = localStorage.getItem("Email");
   const searchTerm = localStorage.getItem("searchTerm")?.toLowerCase() || '';
+  const [activeTab, setActiveTab] = useState("Discuss"); // Default active tab
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,13 +32,13 @@ const Discuss = () => {
       const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setDiscussions(discussionsData);
 
-      // Filter discussions based on searchTerm
-      filterDiscussions(discussionsData, filterOption, searchTerm);
+      // Apply the filter
+      filterDiscussions(discussionsData, discussFilterOption, searchTerm);
     };
     fetchData();
-  }, [db, filterOption, searchTerm]);
+  }, [db, discussFilterOption, searchTerm]);
 
-  const filterDiscussions = (data, filterOption, searchTerm) => {
+  const filterDiscussions = (data, discussFilterOption, searchTerm) => {
     let filtered = data;
 
     // Apply searchTerm filtering
@@ -44,12 +48,13 @@ const Discuss = () => {
       );
     }
 
-    // Apply "My publish" filtering
-    if (filterOption === "My Discussion") {
-      filtered = filtered.filter(discussion => discussion.PubEmail === email); // Correct field: PubEmail
+    // Apply "My Discussions" filtering
+    if (discussFilterOption === "My Discussion") {
+      filtered = filtered.filter(discussion => discussion.PubEmail === email);
     }
 
-    setFilteredDiscussions(filtered);
+    // Set the filtered discussions
+    setFilteredDiscussions(filtered); // Corrected
   };
 
   const handleAddTopic = async (e) => {
@@ -57,11 +62,11 @@ const Discuss = () => {
     await addDoc(collection(db, 'Discussion'), {
       Title: newTitle,
       Publisher: name,
-      PubEmail: email, // Ensure PubEmail is correctly spelled here
+      PubEmail: email,
       Description: newDescription
     });
-    setShowModal(false); // Hide modal after submission
-    setNewTitle(''); // Reset form fields
+    setShowTopicModal(false);
+    setNewTitle('');
     setNewDescription('');
     toast.success("Topic added successfully!", {
       position: "top-center",
@@ -74,7 +79,7 @@ const Discuss = () => {
     setDiscussions(discussionsData);
 
     // Re-apply filtering after new topic addition
-    filterDiscussions(discussionsData, filterOption, searchTerm);
+    filterDiscussions(discussionsData, discussFilterOption, searchTerm);
   };
 
   const handleTitleClick = (discussionId) => {
@@ -82,9 +87,14 @@ const Discuss = () => {
     navigate('/Main/DiscussionPage');
   };
 
+  const handleVoteClick = (voteId) => {
+    localStorage.setItem("voteID", voteId);
+    navigate('/Main/VotePage');
+  };
+
   const handleDeleteClick = (discussionId) => {
     setDiscussionToDelete(discussionId);
-    setShowDeleteModal(true); // Show confirmation modal
+    setShowDeleteModal(true); 
   };
 
   const handleDelete = async () => {
@@ -100,90 +110,120 @@ const Discuss = () => {
     setDiscussions(discussionsData);
 
     // Re-apply filtering after deletion
-    filterDiscussions(discussionsData, filterOption, searchTerm);
+    filterDiscussions(discussionsData, discussFilterOption, searchTerm);
 
-    // Close modal
     setShowDeleteModal(false);
   };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <ToastContainer />
-      <div className="flex justify-between items-center mb-2">
-        <p className="text-gray-500 text-sm">
-          Join the discussion about knitting techniques and materials.
-        </p>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors duration-200"
-          onClick={() => setShowModal(true)}
+      <div className="flex border-b border-gray-300 mb-4">
+        <div
+          className={`mr-6 pb-2 cursor-pointer ${
+            activeTab === "Discuss" ? "border-b-2 border-blue-500 text-blue-600" : ""
+          }`}
+          onClick={() => setActiveTab("Discuss")}
         >
-          + Create a New Topic
-        </button>
+          Discuss
+        </div>
+        <div
+          className={`mr-6 pb-2 cursor-pointer ${
+            activeTab === "Vote" ? "border-b-2 border-blue-500 text-blue-600" : ""
+          }`}
+          onClick={() => setActiveTab("Vote")}
+        >
+          Vote
+        </div>
       </div>
 
-      {/* Dropdown Filter */}
-      <div className="mb-4">
-        <select
-          value={filterOption}
-          onChange={(e) => setFilterOption(e.target.value)}
-          className="border-gray-300 rounded-lg p-2"
-        >
-          <option value="All Discussions">All Discussion</option>
-          <option value="My Discussion">My Discussion</option>
-        </select>
-      </div>
+      {activeTab === "Discuss" && (
+        <>
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-gray-500 text-sm">
+              Join the discussion about knitting techniques and materials.
+            </p>
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors duration-200"
+              onClick={() => setShowTopicModal(true)}
+            >
+              + Create a New Topic
+            </button>
+          </div>
 
-      {/* Modal for Adding Topic */}
-      <AddTopic
-        showModal={showModal}
-        closeModal={() => setShowModal(false)}
-        handleAddTopic={handleAddTopic}
-        newTitle={newTitle}
-        setNewTitle={setNewTitle}
-        newDescription={newDescription}
-        setNewDescription={setNewDescription}
-      />
+          <div className="mb-4">
+            <select
+              value={discussFilterOption}
+              onChange={(e) => setDiscussFilterOption(e.target.value)}
+              className="border-gray-300 rounded-lg p-2"
+            >
+              <option value="All Discussions">All Discussions</option>
+              <option value="My Discussion">My Discussions</option>
+            </select>
+          </div>
 
-      {/* Discussion Thread */}
-      <div className="discussion-thread space-y-4" style={{ maxHeight: '450px', overflowY: 'auto', width: '100%', paddingRight: '10px', boxSizing: 'border-box' }}>
-          {filteredDiscussions.length > 0 ? (
-            filteredDiscussions.map((Discussion) => (
-              <div 
-                key={Discussion.id} 
-                className="discussion flex justify-between items-center bg-gray-100 p-4 rounded-lg cursor-pointer" 
-                style={{ width: '100%', maxWidth: '100%' }} // Ensure discussion cards stay within the container
-                onClick={() => handleTitleClick(Discussion.id)}
-              >
-                <div>
-                  <h2 className="font-bold text-base">{Discussion.Title}</h2>
-                  <p className="text-gray-500 text-sm">{Discussion.Description}</p>
+          <AddTopic
+            showTopicModal={showTopicModal}
+            closeModal={() => setShowTopicModal(false)}
+            handleAddTopic={handleAddTopic}
+            newTitle={newTitle}
+            setNewTitle={setNewTitle}
+            newDescription={newDescription}
+            setNewDescription={setNewDescription}
+          />
+
+          <div className="discussion-thread space-y-4" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+            {filteredDiscussions.length > 0 ? (
+              filteredDiscussions.map((discussion) => (
+                <div
+                  key={discussion.id}
+                  className="discussion flex justify-between items-center bg-gray-100 p-4 rounded-lg cursor-pointer"
+                  onClick={() => handleTitleClick(discussion.id)}
+                >
+                  <div>
+                    <h2 className="font-bold text-base">{discussion.Title}</h2>
+                    <p className="text-gray-500 text-sm">{discussion.Description}</p>
+                  </div>
+
+                  {discussion.PubEmail === email && (
+                    <button
+                      className="text-red-600 ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(discussion.id);
+                      }}
+                      style={{ fontSize: '1.2rem', background: 'none' }}
+                    >
+                      🗑️
+                    </button>
+                  )}
                 </div>
-                
-                {/* Delete button if the user is the publisher */}
-                {Discussion.PubEmail === email && (
-                  <button
-                    className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteClick(Discussion.id);
-                    }}
-                    style={{
-                      fontSize: '1.2rem',
-                      background: 'none',
-                    }}
-                  >
-                    🗑️
-                  </button>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No discussions available.</p>
-          )}
-      </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No discussions available.</p>
+            )}
+          </div>
+        </>
+      )}
 
+      {activeTab === "Vote" && (
+        <>
+          <p className="text-gray-500 text-sm py-4">
+              Participate in the vote about knitting techniques and materials.
+          </p>
+          <div className="mb-4">
+            <select
+              value={voteFilterOption}
+              onChange={(e) => setVoteFilterOption(e.target.value)}
+              className="border-gray-300 rounded-lg p-2"
+            >
+              <option value="All Votes">All Votes</option>
+              <option value="Active Votes">Active Votes</option>
+            </select>
+          </div>
+        </>
+      )}
 
-      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed z-10 inset-0 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg">
