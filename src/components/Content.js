@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Firebase from '../Firebase';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import { useNavigate } from 'react-router-dom';
 import "./Content.css";
@@ -16,8 +25,6 @@ const Content = () => {
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
   const email = localStorage.getItem("Email");;
-  
-  
 
   useEffect(() => {
     if (moduleId && topicKey !== null) {
@@ -68,17 +75,35 @@ const Content = () => {
   };
 
   const updateProgressInFirebase = async (newProgress) => {
-    if (moduleId) {
-      const moduleRef = doc(db, 'Module', moduleId);
-      try {
-        await updateDoc(moduleRef, { progress: newProgress });
-        setProgress(newProgress);
-        console.log("Progress updated to:", newProgress);
-      } catch (error) {
-        console.error("Error updating progress:", error);
-      }
+    const userQuery = query(collection(db, 'Users'), where('Email', '==', email));
+    const userSnapShot = await getDocs(userQuery);
+  
+    if (userSnapShot.empty) {
+      console.error("No user found with the provided email.");
+      return;
+    }
+  
+    const userDoc = userSnapShot.docs[0];
+    const userRef = doc(db, 'Users', userDoc.id);
+  
+    // Update the user's progress for the specific module
+    const updatedUserData = {
+      ...userDoc.data(),
+      progress: {
+        ...userDoc.data().progress,
+        [moduleId]: newProgress, // Update progress for the current module
+      },
+    };
+  
+    try {
+      await updateDoc(userRef, updatedUserData);
+      setProgress(newProgress);
+      console.log("User's progress updated to:", newProgress);
+    } catch (error) {
+      console.error("Error updating user's progress:", error);
     }
   };
+  
 
   const handlePrev = () => {
     if (topicKey > 0) {
