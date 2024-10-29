@@ -3,13 +3,23 @@ import AdmDiscuss from "../components/AdmDiscuss";
 
 const AdmDiscussion = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm); // Debounced search term
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
   useEffect(() => {
-    localStorage.setItem('searchTerm', searchTerm);
+    // Set up a debounce delay
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+      localStorage.setItem('searchTerm', searchTerm);
+    }, 300); // 300ms debounce delay
+
+    // Clear the timeout if the input changes before the timeout is completed
+    return () => {
+      clearTimeout(handler);
+    };
   }, [searchTerm]);
 
   return (
@@ -25,7 +35,7 @@ const AdmDiscussion = () => {
         />
       </div>
       <div className="w-full h-full space-y-6">
-        <AdmDiscuss />
+        <AdmDiscuss searchTerm={debouncedSearchTerm} />
       </div>
     </div>
   );
