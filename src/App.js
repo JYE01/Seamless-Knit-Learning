@@ -20,6 +20,7 @@ import AdmDiscussionPage from './components/AdmDiscussionPage.js';
 import Content from './components/Content.js';
 import AdmQuizzes from './pages/AdmQuizzes.js';
 import AddQuiz from './components/AddQuiz.js';
+import Progress from './pages/Progress.js';
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
             <Route path="/Admin/Discussion" element={<AdmDiscussion />} />
             <Route path="/Admin/DiscussionPage" element={<AdmDiscussionPage />} />
             <Route path="/Admin/Dashboard/Content" element={<Content />} />
+            <Route path="/Admin/Progress" element={<Progress />} />
           </Route>
       </Routes>
     </>

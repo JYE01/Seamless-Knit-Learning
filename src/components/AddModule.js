@@ -15,41 +15,24 @@ const AddModule = () => {
   const [paragraph, setParagraph] = useState('');
   const [pdf, setPdf] = useState('');
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(''); // Update this to useState correctly
+  const [imageUrl, setImageUrl] = useState('');
   const quillRef = useRef(null);
 
-  const handleFileChange = (e, setFile) => {
-    if (e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  // Function to strip HTML tags and get plain text
-  const stripHtmlTags = (html) => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    return tempDiv.innerText;
-  };
-
-  // Custom image handler for ReactQuill to handle multiple images
 const imageHandler = () => {
   const input = document.createElement('input');
   input.setAttribute('type', 'file');
   input.setAttribute('accept', 'image/*');
-  input.setAttribute('multiple', 'multiple'); // Allow multiple file selection
+  input.setAttribute('multiple', 'multiple'); 
   input.click();
-
   input.onchange = async () => {
-    const files = Array.from(input.files); // Get multiple files
+    const files = Array.from(input.files); 
     const editor = quillRef.current.getEditor();
     const range = editor.getSelection();
 
     files.forEach(async (file) => {
       if (file) {
         const uploadedImageUrl = await uploadFile(file, 'Module');
-        setImageUrl((prevState) => [...prevState, uploadedImageUrl]); // Store all image URLs
-
-        // Insert the uploaded image URL into the editor
+        setImageUrl((prevState) => [...prevState, uploadedImageUrl]); 
         editor.insertEmbed(range.index, 'image', uploadedImageUrl);
       }
     });
@@ -59,7 +42,7 @@ const imageHandler = () => {
 const pdfHandler = () => {
   const input = document.createElement('input');
   input.setAttribute('type', 'file');
-  input.setAttribute('accept', 'application/pdf'); // Accept only PDF files
+  input.setAttribute('accept', 'application/pdf'); 
   input.click();
 
   input.onchange = async () => {
@@ -68,16 +51,12 @@ const pdfHandler = () => {
       const uploadedPdfUrl = await uploadFile(file, 'PDFs');
       const editor = quillRef.current.getEditor();
       const range = editor.getSelection();
-
-      // Insert a link to the uploaded PDF in the content
       editor.insertText(range.index, file.name);
       editor.formatText(range.index, range.index + file.name.length, { link: uploadedPdfUrl });
     }
   };
 };
 
-
-  // Function to upload file to Firebase Storage and return the download URL
   const uploadFile = async (file, folder) => {
     const storageRef = ref(storage, `${folder}/${file.name}`);
     const snapshot = await uploadBytes(storageRef, file);
@@ -91,28 +70,25 @@ const pdfHandler = () => {
       pdfUrl = await uploadFile(pdf, 'PDF');
     }
   
-    // Ensure each subtopic has its own image URL
     if (topicName.trim() && paragraph.trim()) {
       const newSubtopic = {
         topicName,
         content: paragraph,
       };
   
-      setSubtopics([...subtopics, newSubtopic]); // Add subtopic to the list
+      setSubtopics([...subtopics, newSubtopic]); 
       setTopicName('');
       setParagraph('');
     } else {
       alert('Please fill in both the topic name and content!');
     }
   };
-  
 
   const handleUpload = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Upload the entire module with all subtopics to Firestore
       await addDoc(collection(db, 'Module'), {
         name: name,
         subtopics: subtopics, 
@@ -127,7 +103,6 @@ const pdfHandler = () => {
     setLoading(false);
   };
 
-  // ReactQuill Editor with image handler memoized to prevent unnecessary re-renders
   const memoizedQuill = useMemo(() => (
     <ReactQuill
       ref={quillRef}

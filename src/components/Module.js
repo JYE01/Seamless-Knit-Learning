@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Module = () => {
   const [modules, setModules] = useState([]);
-  const [openModules, setOpenModules] = useState({}); // Track which modules are open
+  const [openModules, setOpenModules] = useState({}); 
   const [userProgress, setUserProgress] = useState({});
   const db = getFirestore(Firebase);
   const navigate = useNavigate();
@@ -47,15 +47,14 @@ const Module = () => {
   const handleTopicClick = (moduleId, topicKey) => {
     localStorage.setItem("topicKey", topicKey);
     localStorage.setItem("moduleId", moduleId);
-    navigate('/Main/Dashboard/Content'); // Redirect to Content page
+    navigate('/Main/Dashboard/Content');
   };
 
   return (
     <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-15xl mx-auto" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto' }}>
       {modules.map((module, index) => {
-        // Get progress for each module from userProgress, default to 0 if not found
-        const progress = userProgress[module.id] || 0;
-
+        const progress = userProgress[module.name]?.progress || 0;
+        const isCompleted = userProgress[module.name]?.completed || false;
         return (
           <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-md">
             <div className="flex justify-between items-center">
@@ -72,12 +71,13 @@ const Module = () => {
             <div className="h-3 bg-gray-300 rounded-full">
               <div
                 className="h-3 bg-gray-700 rounded-full"
-                style={{ width: `${progress}%` }} // Display the progress for the module
+                style={{ width: `${progress}%` }} 
               ></div>
             </div>
             <p className="text-sm text-gray-500 mt-2">
               Progress: {progress}%
             </p>
+            {isCompleted && <p className="text-sm text-green-500 mt-2">Module Completed!</p>}
 
             {/* Conditionally render subtopics */}
             {openModules[index] && (

@@ -41,7 +41,7 @@ const AdminNavbar = () => {
     { name: "Dashboard", path: "/Admin/Dashboard" },
     { name: "Quizzes", path: "/Admin/Quizzes" },
     { name: "Discussion", path: "/Admin/Discussion" },
-    { name: "Search", path: "#" }
+    { name: "Progress", path: "/Admin/Progress" }
   ];
 
   return (

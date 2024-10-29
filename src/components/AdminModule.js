@@ -7,11 +7,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AdminModule = ({ removeMode }) => {
     const [modules, setModules] = useState([]);
-    const [openModules, setOpenModules] = useState({}); // Track which modules are open
+    const [openModules, setOpenModules] = useState({}); 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [moduleToDelete, setModuleToDelete] = useState(null); // To hold the module ID for deletion
+    const [moduleToDelete, setModuleToDelete] = useState(null); 
     const [userProgress, setUserProgress] = useState({});
-    const [subtopicToDelete, setSubtopicToDelete] = useState({ moduleId: null, subIndex: null }); // Store subtopic info for deletion
+    const [subtopicToDelete, setSubtopicToDelete] = useState({ moduleId: null, subIndex: null });
     const db = getFirestore(Firebase);
     const navigate = useNavigate();
     const email = localStorage.getItem("Email");
@@ -45,7 +45,7 @@ const AdminModule = ({ removeMode }) => {
     const toggleModule = (index) => {
         setOpenModules(prevState => ({
             ...prevState,
-            [index]: !prevState[index] // Toggle the state of the clicked module
+            [index]: !prevState[index] 
         }));
     };
 
@@ -53,32 +53,29 @@ const AdminModule = ({ removeMode }) => {
         if (!removeMode) {
             localStorage.setItem("topicKey", topicKey);
             localStorage.setItem("moduleId", moduleId);
-            navigate('/Admin/Dashboard/Content'); // Redirect to Content page
+            navigate('/Admin/Dashboard/Content'); 
         }
     };
 
-    // Show delete confirmation modal for module
     const handleDeleteClick = (moduleId) => {
         setModuleToDelete(moduleId);
-        setShowDeleteModal(true); // Show the confirmation modal
+        setShowDeleteModal(true);
     };
 
-    // Show delete confirmation modal for subtopic
     const handleDeleteSubTopic = (moduleId, subIndex) => {
         setSubtopicToDelete({ moduleId, subIndex });
-        setShowDeleteModal(true); // Show the confirmation modal
+        setShowDeleteModal(true); 
     };
 
-    // Delete module after confirmation
     const handleDeleteModule = async () => {
         try {
             await deleteDoc(doc(db, 'Module', moduleToDelete));
-            setModules(modules.filter(module => module.id !== moduleToDelete)); // Update UI after deletion
+            setModules(modules.filter(module => module.id !== moduleToDelete)); 
             toast.success("Module deleted successfully!", {
                 position: "top-center",
             });
-            setShowDeleteModal(false); // Close the modal
-            setModuleToDelete(null); // Reset the moduleToDelete state
+            setShowDeleteModal(false); 
+            setModuleToDelete(null); 
         } catch (error) {
             console.error("Error deleting module: ", error);
             toast.error("Error deleting module!", {
@@ -87,7 +84,6 @@ const AdminModule = ({ removeMode }) => {
         }
     };
 
-    // Delete subtopic after confirmation
     const handleDeleteSubtopic = async () => {
         const { moduleId, subIndex } = subtopicToDelete;
 
@@ -97,12 +93,10 @@ const AdminModule = ({ removeMode }) => {
 
             if (moduleSnap.exists()) {
                 const moduleData = moduleSnap.data();
-                const updatedSubtopics = moduleData.subtopics.filter((_, index) => index !== subIndex); // Remove subtopic by index
+                const updatedSubtopics = moduleData.subtopics.filter((_, index) => index !== subIndex); 
 
-                // Update the Firestore document with the new subtopics array
                 await updateDoc(moduleDocRef, { subtopics: updatedSubtopics });
 
-                // Update the local state
                 setModules(prevModules =>
                     prevModules.map(module =>
                         module.id === moduleId ? { ...module, subtopics: updatedSubtopics } : module
@@ -112,8 +106,8 @@ const AdminModule = ({ removeMode }) => {
                 toast.success("Subtopic deleted successfully!", {
                     position: "top-center",
                 });
-                setShowDeleteModal(false); // Close the modal
-                setSubtopicToDelete({ moduleId: null, subIndex: null }); // Reset subtopicToDelete state
+                setShowDeleteModal(false); 
+                setSubtopicToDelete({ moduleId: null, subIndex: null }); 
             }
         } catch (error) {
             console.error("Error deleting subtopic: ", error);
@@ -132,7 +126,7 @@ const AdminModule = ({ removeMode }) => {
                         <h2 className="text-lg font-semibold mb-3">{module.name}</h2>
                         {removeMode ? (
                             <button 
-                                onClick={() => handleDeleteClick(module.id)} // Show delete confirmation
+                                onClick={() => handleDeleteClick(module.id)} 
                                 className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
                                 style={{
                                     fontSize: '1.2rem',
@@ -153,12 +147,13 @@ const AdminModule = ({ removeMode }) => {
                     <div className="h-3 bg-gray-300 rounded-full">
                         <div
                             className="h-3 bg-gray-700 rounded-full"
-                            style={{ width: `${userProgress[module.id] || 0}%` }}
+                            style={{ width: `${userProgress[module.name]?.progress || 0}%` }}
                         ></div>
                     </div>
                     <p className="text-sm text-gray-500 mt-2">
-                        Progress: {userProgress[module.id] || 0}%
+                        Progress: {userProgress[module.name]?.progress || 0}%
                     </p>
+                    {userProgress[module.name]?.completed && <p className="text-sm text-green-500 mt-2">Module Completed!</p>}
 
                     {/* Conditionally render subtopics */}
                     {openModules[index] && (
@@ -177,7 +172,7 @@ const AdminModule = ({ removeMode }) => {
                                             </p>
                                             {removeMode ? (
                                                 <button 
-                                                    onClick={() => handleDeleteSubTopic(module.id, subIndex)} // Show delete confirmation
+                                                    onClick={() => handleDeleteSubTopic(module.id, subIndex)} 
                                                     className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
                                                     style={{
                                                         fontSize: '1.2rem',
@@ -199,7 +194,6 @@ const AdminModule = ({ removeMode }) => {
                     )}
                 </div>
             ))}
-
             {/* Delete Confirmation Modal */}
             {showDeleteModal && (
                 <div className="fixed z-10 inset-0 flex items-center justify-center">
@@ -209,13 +203,13 @@ const AdminModule = ({ removeMode }) => {
                         <div className="mt-6 flex justify-end space-x-4">
                             <button
                                 className="bg-gray-300 px-4 py-2 rounded-lg"
-                                onClick={() => setShowDeleteModal(false)} // Close the modal
+                                onClick={() => setShowDeleteModal(false)} 
                             >
                                 Cancel
                             </button>
                             <button
                                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-all"
-                                onClick={subtopicToDelete.moduleId ? handleDeleteSubtopic : handleDeleteModule} // Confirm delete
+                                onClick={subtopicToDelete.moduleId ? handleDeleteSubtopic : handleDeleteModule} 
                             >
                                 Delete
                             </button>

@@ -22,6 +22,7 @@ const Content = () => {
   const [topicKey, setTopicKey] = useState(parseInt(localStorage.getItem("topicKey"), 10)); 
   const [totalSubtopics, setTotalSubtopics] = useState(0);
   const [moduleId, setModuleId] = useState(localStorage.getItem("moduleId"));
+  const [module, setModule] = useState("");
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
   const email = localStorage.getItem("Email");;
@@ -34,6 +35,7 @@ const Content = () => {
 
         if (moduleSnap.exists()) {
           const moduleData = moduleSnap.data();
+          setModule(moduleData);
           const subtopic = moduleData.subtopics[topicKey];
           setSubtopicContent(subtopic);
           setTotalSubtopics(moduleData.subtopics.length);
@@ -85,13 +87,16 @@ const Content = () => {
   
     const userDoc = userSnapShot.docs[0];
     const userRef = doc(db, 'Users', userDoc.id);
-  
-    // Update the user's progress for the specific module
+    const moduleCompleted = newProgress === 100 ? true : false;
+    
     const updatedUserData = {
       ...userDoc.data(),
       progress: {
         ...userDoc.data().progress,
-        [moduleId]: newProgress, // Update progress for the current module
+        [module.name]: {
+          progress: newProgress,
+          completed: moduleCompleted, 
+        },
       },
     };
   
