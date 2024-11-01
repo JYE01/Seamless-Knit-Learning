@@ -6,19 +6,19 @@ import AddVote from './AddVote';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import VoteModal from './VoteModal'; // Import the VoteModal component
+import VoteModal from './VoteModal';
 
 const AdmDiscuss = () => {
   const [discussions, setDiscussions] = useState([]);
   const [votes, setVotes] = useState([]);
-  const [filteredDiscussions, setFilteredDiscussions] = useState([]); // For filtered discussions
-  const [filteredVotes, setFilteredVotes] = useState([]); // For filtered votes
+  const [filteredDiscussions, setFilteredDiscussions] = useState([]); 
+  const [filteredVotes, setFilteredVotes] = useState([]); 
   const [showTopicModal, setShowTopicModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [voteOptions, setVoteOptions] = useState(['']); // Initialize with one empty option
-  const [discussFilterOption, setDiscussFilterOption] = useState('All Discussions'); // For Discuss filtering
-  const [voteFilterOption, setVoteFilterOption] = useState('All Votes'); // For Vote filtering
+  const [voteOptions, setVoteOptions] = useState(['']); 
+  const [discussFilterOption, setDiscussFilterOption] = useState('All Discussions'); 
+  const [voteFilterOption, setVoteFilterOption] = useState('All Votes'); 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [discussionToDelete, setDiscussionToDelete] = useState(null);
   const db = getFirestore(Firebase);
@@ -26,10 +26,11 @@ const AdmDiscuss = () => {
   const name = localStorage.getItem("Name");
   const email = localStorage.getItem("Email");
   const searchTerm = localStorage.getItem("searchTerm")?.toLowerCase() || '';
-  const [activeTab, setActiveTab] = useState("Discuss"); // Default active tab
-  const [selectedVote, setSelectedVote] = useState(null); // Track selected vote
+  const [activeTab, setActiveTab] = useState("Discuss"); 
+  const [selectedVote, setSelectedVote] = useState(null); 
   const [showVote, setShowVote] = useState(false);
   const [showVoteModal, setShowVoteModal] = useState(false);
+  const [showVoteDeleteModal, setShowVoteDeleteModal] = useState(false);
 
   useEffect(() => {
     const fetchDiscussions = async () => {
@@ -37,27 +38,27 @@ const AdmDiscuss = () => {
       const discussionsSnapShot = await getDocs(discussionsQuery);
       const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setDiscussions(discussionsData);
-
-      // Initially set all discussions as filtered
       setFilteredDiscussions(discussionsData);
     };
     fetchDiscussions();
   }, [db]);
 
+  const fetchVotes = async () => {
+    const votesQuery = query(collection(db, 'Vote'));
+    const votesSnapShot = await getDocs(votesQuery);
+    const votesData = votesSnapShot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      hasVoted: doc.data().UserVotes && Object.values(doc.data().UserVotes).flat().includes(email),
+    }));
+    setVotes(votesData);
+    setFilteredVotes(votesData);
+  };
+
   useEffect(() => {
-    const fetchVotes = async () => {
-      const votesQuery = query(collection(db, 'Vote'));
-      const votesSnapShot = await getDocs(votesQuery);
-      const votesData = votesSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setVotes(votesData);
-
-      // Initially set all votes as filtered
-      setFilteredVotes(votesData);
-    };
     fetchVotes();
-  }, [db]);
+  }, [db, email]);
 
-  // Apply filtering whenever the relevant states change
   useEffect(() => {
     filterDiscussions(discussions, discussFilterOption, searchTerm);
   }, [discussions, discussFilterOption, searchTerm]);
@@ -69,38 +70,34 @@ const AdmDiscuss = () => {
   const filterDiscussions = (data, discussFilterOption, searchTerm) => {
     let filtered = data;
 
-    // Apply searchTerm filtering
     if (searchTerm) {
       filtered = filtered.filter(discussion => 
         discussion.Title.toLowerCase().includes(searchTerm)
       );
     }
 
-    // Apply "My Discussions" filtering
     if (discussFilterOption === "My Discussion") {
       filtered = filtered.filter(discussion => discussion.PubEmail === email);
     }
 
-    // Set the filtered discussions
     setFilteredDiscussions(filtered);
   };
 
   const filterVotes = (data, voteFilterOption, searchTerm) => {
     let filtered = data;
 
-    // Apply searchTerm filtering
     if (searchTerm) {
       filtered = filtered.filter(vote => 
         vote.Title.toLowerCase().includes(searchTerm)
       );
     }
 
-    // Apply "Active Votes" filtering (assuming 'active' status is stored in vote data)
-    if (voteFilterOption === "Active Votes") {
-      filtered = filtered.filter(vote => vote.isActive); // Ensure 'isActive' field exists in Vote documents
+    if (voteFilterOption === "Unvoted Votes") {
+      filtered = filtered.filter(vote => !vote.hasVoted);
+    } else if (voteFilterOption === "Voted Votes") {
+      filtered = filtered.filter(vote => vote.hasVoted);
     }
 
-    // Set the filtered votes
     setFilteredVotes(filtered);
   };
 
@@ -119,7 +116,6 @@ const AdmDiscuss = () => {
       position: "top-center",
     });
 
-    // Re-fetch discussions after adding a new topic
     const discussionsQuery = query(collection(db, 'Discussion'));
     const discussionsSnapShot = await getDocs(discussionsQuery);
     const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -128,8 +124,7 @@ const AdmDiscuss = () => {
 
   const handleAddVote = async (e) => {
     e.preventDefault();
-
-    // Validate that all options are filled
+  
     const filledOptions = voteOptions.filter(option => option.trim() !== '');
     if (filledOptions.length < 2) {
       toast.error("Please provide at least two options for the vote.", {
@@ -137,27 +132,29 @@ const AdmDiscuss = () => {
       });
       return;
     }
-
+  
+    const optionsMap = filledOptions.reduce((acc, option) => {
+      acc[option] = 0;
+      return acc;
+    }, {});
+  
     await addDoc(collection(db, 'Vote'), {
       Title: newTitle,
       Description: newDescription,
-      Options: filledOptions, // Store options as an array
-      isActive: true, // Example field to manage active votes
+      Options: optionsMap,
+      UserVotes: {},
       createdAt: new Date()
     });
+  
     setShowVoteModal(false);
     setNewTitle('');
     setNewDescription('');
-    setVoteOptions(['']); // Reset options to one empty field
+    setVoteOptions(['']); 
     toast.success("Vote added successfully!", {
       position: "top-center",
     });
-
-    // Re-fetch votes after adding a new vote
-    const votesQuery = query(collection(db, 'Vote'));
-    const votesSnapShot = await getDocs(votesQuery);
-    const votesData = votesSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setVotes(votesData);
+  
+    fetchVotes();
   };
 
   const handleVoteClick = (vote) => {
@@ -175,23 +172,35 @@ const AdmDiscuss = () => {
     setShowDeleteModal(true); 
   };
 
+  const handleVoteDeleteClick = (vote) => {
+    setDiscussionToDelete(vote);
+    setShowVoteDeleteModal(true); 
+  };
+
   const handleDelete = async () => {
     await deleteDoc(doc(db, 'Discussion', discussionToDelete));
     toast.success("Topic deleted successfully!", {
       position: "top-center",
     });
-
-    // Re-fetch discussions after deletion
+    setShowDeleteModal(false); 
     const discussionsQuery = query(collection(db, 'Discussion'));
     const discussionsSnapShot = await getDocs(discussionsQuery);
     const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setDiscussions(discussionsData);
   };
 
+  const handleVoteDelete = async () => {
+    await deleteDoc(doc(db, 'Vote', discussionToDelete));
+    toast.success("Vote deleted successfully!", {
+      position: "top-center",
+    });
+    setShowVoteDeleteModal(false); 
+    fetchVotes();
+  };
+
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <ToastContainer />
-      {/* Tabs */}
       <div className="flex border-b border-gray-300 mb-4">
         <div
           className={`mr-6 pb-2 cursor-pointer ${
@@ -213,7 +222,6 @@ const AdmDiscuss = () => {
 
       {activeTab === "Discuss" && (
         <>
-          {/* Header Section with Discussion Info and Create Button */}
           <div className="flex justify-between items-center mb-2">
             <p className="text-gray-500 text-sm">
               Join the discussion about knitting techniques and materials.
@@ -226,7 +234,6 @@ const AdmDiscuss = () => {
             </button>
           </div>
 
-          {/* Dropdown Filter */}
           <div className="mb-4">
             <select
               value={discussFilterOption}
@@ -238,7 +245,6 @@ const AdmDiscuss = () => {
             </select>
           </div>
 
-          {/* Modal for Adding Topic */}
           <AddTopic
             showTopicModal={showTopicModal}
             closeModal={() => setShowTopicModal(false)}
@@ -249,7 +255,6 @@ const AdmDiscuss = () => {
             setNewDescription={setNewDescription}
           />
 
-          {/* Discussion Thread */}
           <div className="discussion-thread space-y-4" style={{ maxHeight: '50vh', overflowY: 'auto', width: '100%', paddingRight: '10px', boxSizing: 'border-box' }}>
             {filteredDiscussions.length > 0 ? (
               filteredDiscussions.map((discussion) => (
@@ -288,7 +293,6 @@ const AdmDiscuss = () => {
 
       {activeTab === "Vote" && (
         <>
-          {/* Header Section with Vote Info and Create Button */}
           <div className="flex justify-between items-center mb-2">
             <p className="text-gray-500 text-sm">
               Participate in the vote about knitting techniques and materials.
@@ -301,7 +305,6 @@ const AdmDiscuss = () => {
             </button>
           </div>
 
-          {/* Dropdown Filter */}
           <div className="mb-4">
             <select
               value={voteFilterOption}
@@ -309,11 +312,11 @@ const AdmDiscuss = () => {
               className="border-gray-300 rounded-lg p-2"
             >
               <option value="All Votes">All Votes</option>
-              <option value="Active Votes">Active Votes</option>
+              <option value="Unvoted Votes">Unvoted Votes</option>
+              <option value="Voted Votes">Voted Votes</option>
             </select>
           </div>
 
-          {/* Modal for Adding Vote */}
           <AddVote
             showVoteModal={showVoteModal}
             closeModal={() => setShowVoteModal(false)}
@@ -326,19 +329,32 @@ const AdmDiscuss = () => {
             setVoteOptions={setVoteOptions}
           />
 
-          {/* Vote Thread */}
-          <div className="vote-thread space-y-4">
+          <div className="vote-thread space-y-4" style={{ maxHeight: '50vh', overflowY: 'auto', width: '100%', paddingRight: '10px', boxSizing: 'border-box' }}>
             {filteredVotes.length > 0 ? (
               filteredVotes.map((vote) => (
                 <div 
                   key={vote.id} 
                   className="vote flex justify-between items-center bg-gray-100 p-4 rounded-lg cursor-pointer"
-                  onClick={() => handleVoteClick(vote)} // Pass the vote to modal
+                  onClick={() => handleVoteClick(vote)}
                 >
                   <div>
                     <h2 className="font-bold text-base">{vote.Title}</h2>
                     <p className="text-gray-500 text-sm">{vote.Description}</p>
                   </div>
+
+                  <button
+                    className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleVoteDeleteClick(vote.id);
+                    }}
+                    style={{
+                      fontSize: '1.2rem',
+                      background: 'none',
+                    }}
+                  >
+                    🗑️
+                  </button>
                 </div>
               ))
             ) : (
@@ -348,16 +364,15 @@ const AdmDiscuss = () => {
         </>
       )}
 
-      {/* Vote Modal */}
       <VoteModal
         showVote={showVote}
         closeModal={() => setShowVote(false)}
-        vote={selectedVote} // Pass the selected vote
-        userEmail={email} // Pass the current user's email
-        db={db} // Pass the Firestore database instance
+        vote={selectedVote} 
+        userEmail={email} 
+        db={db} 
+        onVoteSubmit={fetchVotes} // Callback to refresh votes on submit
       />
 
-      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed z-10 inset-0 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -373,6 +388,29 @@ const AdmDiscuss = () => {
               <button
                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-all"
                 onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showVoteDeleteModal && (
+        <div className="fixed z-10 inset-0 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+            <p>Are you sure you want to delete this vote?</p>
+            <div className="mt-6 flex justify-end space-x-4">
+              <button
+                className="bg-gray-300 px-4 py-2 rounded-lg"
+                onClick={() => setShowVoteDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-all"
+                onClick={handleVoteDelete}
               >
                 Delete
               </button>

@@ -5,11 +5,13 @@ import AddTopic from './AddTopic';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import VoteModal from './VoteModal';
 
 const Discuss = () => {
   const [discussions, setDiscussions] = useState([]);
   const [votes, setVotes] = useState([]);
-  const [filteredDiscussions, setFilteredDiscussions] = useState([]); // Use this for the filtered discussions
+  const [filteredDiscussions, setFilteredDiscussions] = useState([]); 
+  const [filteredVotes, setFilteredVotes] = useState([]); 
   const [showTopicModal, setShowTopicModal] = useState(false);
   const [showVoteModal, setShowVoteModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -24,6 +26,8 @@ const Discuss = () => {
   const email = localStorage.getItem("Email");
   const searchTerm = localStorage.getItem("searchTerm")?.toLowerCase() || '';
   const [activeTab, setActiveTab] = useState("Discuss"); // Default active tab
+  const [selectedVote, setSelectedVote] = useState(null); 
+  const [showVote, setShowVote] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +41,30 @@ const Discuss = () => {
     };
     fetchData();
   }, [db, discussFilterOption, searchTerm]);
+
+  const fetchVotes = async () => {
+    const votesQuery = query(collection(db, 'Vote'));
+    const votesSnapShot = await getDocs(votesQuery);
+    const votesData = votesSnapShot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      hasVoted: doc.data().UserVotes && Object.values(doc.data().UserVotes).flat().includes(email),
+    }));
+    setVotes(votesData);
+    setFilteredVotes(votesData);
+  };
+  
+  useEffect(() => {
+    filterDiscussions(discussions, discussFilterOption, searchTerm);
+  }, [discussions, discussFilterOption, searchTerm]);
+
+  useEffect(() => {
+    fetchVotes();
+  }, [db, email]);
+
+  useEffect(() => {
+    filterVotes(votes, voteFilterOption, searchTerm);
+  }, [votes, voteFilterOption, searchTerm]);
 
   const filterDiscussions = (data, discussFilterOption, searchTerm) => {
     let filtered = data;
@@ -55,6 +83,24 @@ const Discuss = () => {
 
     // Set the filtered discussions
     setFilteredDiscussions(filtered); // Corrected
+  };
+
+  const filterVotes = (data, voteFilterOption, searchTerm) => {
+    let filtered = data;
+
+    if (searchTerm) {
+      filtered = filtered.filter(vote => 
+        vote.Title.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    if (voteFilterOption === "Unvoted Votes") {
+      filtered = filtered.filter(vote => !vote.hasVoted);
+    } else if (voteFilterOption === "Voted Votes") {
+      filtered = filtered.filter(vote => vote.hasVoted);
+    }
+
+    setFilteredVotes(filtered);
   };
 
   const handleAddTopic = async (e) => {
@@ -87,9 +133,9 @@ const Discuss = () => {
     navigate('/Main/DiscussionPage');
   };
 
-  const handleVoteClick = (voteId) => {
-    localStorage.setItem("voteID", voteId);
-    navigate('/Main/VotePage');
+  const handleVoteClick = (vote) => {
+    setSelectedVote(vote);
+    setShowVote(true);
   };
 
   const handleDeleteClick = (discussionId) => {
@@ -208,9 +254,12 @@ const Discuss = () => {
 
       {activeTab === "Vote" && (
         <>
-          <p className="text-gray-500 text-sm py-4">
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-gray-500 text-sm">
               Participate in the vote about knitting techniques and materials.
-          </p>
+            </p>
+          </div>
+
           <div className="mb-4">
             <select
               value={voteFilterOption}
@@ -218,11 +267,40 @@ const Discuss = () => {
               className="border-gray-300 rounded-lg p-2"
             >
               <option value="All Votes">All Votes</option>
-              <option value="Active Votes">Active Votes</option>
+              <option value="Unvoted Votes">Unvoted Votes</option>
+              <option value="Voted Votes">Voted Votes</option>
             </select>
+          </div>
+
+          <div className="vote-thread space-y-4" style={{ maxHeight: '50vh', overflowY: 'auto', width: '100%', paddingRight: '10px', boxSizing: 'border-box' }}>
+            {filteredVotes.length > 0 ? (
+              filteredVotes.map((vote) => (
+                <div 
+                  key={vote.id} 
+                  className="vote flex justify-between items-center bg-gray-100 p-4 rounded-lg cursor-pointer"
+                  onClick={() => handleVoteClick(vote)}
+                >
+                  <div>
+                    <h2 className="font-bold text-base">{vote.Title}</h2>
+                    <p className="text-gray-500 text-sm">{vote.Description}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No votes available.</p>
+            )}
           </div>
         </>
       )}
+
+      <VoteModal
+        showVote={showVote}
+        closeModal={() => setShowVote(false)}
+        vote={selectedVote} 
+        userEmail={email} 
+        db={db} 
+        onVoteSubmit={fetchVotes} // Callback to refresh votes on submit
+      />
 
       {showDeleteModal && (
         <div className="fixed z-10 inset-0 flex items-center justify-center">
