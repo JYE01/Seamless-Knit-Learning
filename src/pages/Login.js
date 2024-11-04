@@ -59,7 +59,7 @@ function LogIn() {
           toast.success("Logged in as Admin!", {
             position: "top-center",
           });
-          window.location.href = "/Admin/Dashboard"; // Redirect to admin dashboard
+          window.location.href = "/AdminDashboard"; // Redirect to admin dashboard
         } else {
           toast.error("Incorrect password for admin login", {
             position: "top-center",

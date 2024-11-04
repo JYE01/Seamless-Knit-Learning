@@ -39,17 +39,15 @@ function App() {
             <Route path="/Main/QuizPage" element={<QuizPage />} />
             <Route path="/Main/Dashboard/Content" element={<Content />} />
           </Route> 
-          <Route path="/Admin" element={<AdminLayout />}>
-            <Route path="/Admin/Dashboard" element={<AdminDashboard />} />
-            <Route path="/Admin/Dashboard/AddModule" element={<AddModule />} />
-            <Route path="/Admin/Quizzes" element={<AdmQuizzes />} />
-            <Route path="/Admin/QuizPage" element={<QuizPage />} />
-            <Route path="/Admin/AddQuiz" element={<AddQuiz />} />
-            <Route path="/Admin/Discussion" element={<AdmDiscussion />} />
-            <Route path="/Admin/DiscussionPage" element={<AdmDiscussionPage />} />
-            <Route path="/Admin/Dashboard/Content" element={<Content />} />
-            <Route path="/Admin/Progress" element={<Progress />} />
-          </Route>
+          <Route path="/AdminDashboard" element={<AdminDashboard />} />
+          <Route path="/AdminDashboard/AddModule" element={<AddModule />} />
+          <Route path="/AdminQuizzes" element={<AdmQuizzes />} />
+          <Route path="/AdminQuizPage" element={<QuizPage />} />
+          <Route path="/AdminAddQuiz" element={<AddQuiz />} />
+          <Route path="/AdminDiscussion" element={<AdmDiscussion />} />
+          <Route path="/AdminDiscussionPage" element={<AdmDiscussionPage />} />
+          <Route path="/AdminDashboard/Content" element={<Content />} />
+          <Route path="/AdminProgress" element={<Progress />} />
       </Routes>
     </>
   );
