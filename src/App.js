@@ -31,6 +31,7 @@ function App() {
           <Route path="/Signup" element={<Signup />} />
           <Route path="/Reset" element={<Reset />} />
           <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
+          <Route path="/Dashboard" element={<AdminDashboard />} />
           <Route path="/Main" element={<MainLayout />}>
             <Route path="Dashboard" element={<Dashboard />} />
             <Route path="Quizzes" element={<Quizzes />} />
@@ -40,7 +41,7 @@ function App() {
             <Route path="Dashboard/Content" element={<Content />} />
           </Route> 
           <Route path="/Admin" element={<AdminLayout />}>
-            <Route path="Dashboard" element={<AdminDashboard />} />
+            
             <Route path="Dashboard/AddModule" element={<AddModule />} />
             <Route path="Quizzes" element={<AdmQuizzes />} />
             <Route path="QuizPage" element={<QuizPage />} />
