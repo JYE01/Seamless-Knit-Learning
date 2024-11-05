@@ -33,7 +33,7 @@ function App() {
           <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
           <Route path="/Main" element={<MainLayout />}>
             <Route path="Dashboard" element={<Dashboard />} />
-            <Route path="/Quizzes" element={<Quizzes />} />
+            <Route path="Quizzes" element={<Quizzes />} />
             <Route path="Discussion" element={<Discussion />} />
             <Route path="DiscussionPage" element={<DiscussionPage />} />
             <Route path="QuizPage" element={<QuizPage />} />
