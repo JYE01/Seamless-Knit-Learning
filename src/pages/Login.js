@@ -8,6 +8,7 @@ import googleLogo from '../assets/img/googleIcon.png';
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 function LogIn() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ function LogIn() {
   const [user, setUser] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogIn = async (e) => {
     e.preventDefault();
@@ -59,7 +61,7 @@ function LogIn() {
           toast.success("Logged in as Admin!", {
             position: "top-center",
           });
-          window.location.href = "/Dashboard"; // Redirect to admin dashboard
+          navigate("/Admin/Dashboard"); // Redirect to admin dashboard
         } else {
           toast.error("Incorrect password for admin login", {
             position: "top-center",
@@ -112,7 +114,7 @@ function LogIn() {
           toast.success("Logged in successfully with Google!", {
             position: "top-center",
           });
-          window.location.href = "/Main/Dashboard";
+          navigate("/Main/Dashboard");
         } else {
           console.log("No matching email in Firestore");
           toast.error("Google account isn't signed up!", {
