@@ -32,7 +32,7 @@ function LogIn() {
       toast.success("Logged in successfully!", {
         position: "top-center",
       });
-      window.location.href = "/Main/Dashboard";
+      navigate("/Main/Dashboard");
     } catch (error) {
       console.log(error.message);
       toast.error("Invalid email or password", {

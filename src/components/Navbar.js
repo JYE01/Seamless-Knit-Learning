@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import './Navbar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [Name, setName] = useState("");
@@ -10,6 +11,7 @@ const Navbar = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   const location = useLocation();
   const dropdownRef = useRef(null); // Reference for dropdown container
+  const navigate = useNavigate();
 
   useEffect(() => {
     const name = localStorage.getItem("Name");
@@ -47,7 +49,8 @@ const Navbar = () => {
   const handleSignOut = async () => {
       localStorage.removeItem("Email");
       localStorage.removeItem("Name");
-      window.location.replace("/login");
+      navigate("/login");
+
   };
 
   return (
