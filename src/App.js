@@ -32,25 +32,24 @@ function App() {
           <Route path="/Reset" element={<Reset />} />
           <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
           <Route path="/Main" element={<MainLayout />}>
-            <Route path="Dashboard" element={<Dashboard />} />
-            <Route path="Quizzes" element={<Quizzes />} />
-            <Route path="Discussion" element={<Discussion />} />
-            <Route path="DiscussionPage" element={<DiscussionPage />} />
-            <Route path="QuizPage" element={<QuizPage />} />
-            <Route path="Dashboard/Content" element={<Content />} />
-          </Route>
+            <Route path="/Main/Dashboard" element={<Dashboard />} />
+            <Route path="/Main/Quizzes" element={<Quizzes />} />
+            <Route path="/Main/Discussion" element={<Discussion />} />
+            <Route path="/Main/DiscussionPage" element={<DiscussionPage />} />
+            <Route path="/Main/QuizPage" element={<QuizPage />} />
+            <Route path="/Main/Dashboard/Content" element={<Content />} />
+          </Route> 
           <Route path="/Admin" element={<AdminLayout />}>
-            <Route path="Dashboard" element={<AdminDashboard />} />
-            <Route path="Dashboard/AddModule" element={<AddModule />} />
-            <Route path="Quizzes" element={<AdmQuizzes />} />
-            <Route path="QuizPage" element={<QuizPage />} />
-            <Route path="AddQuiz" element={<AddQuiz />} />
-            <Route path="Discussion" element={<AdmDiscussion />} />
-            <Route path="DiscussionPage" element={<AdmDiscussionPage />} />
-            <Route path="Dashboard/Content" element={<Content />} />
-            <Route path="Progress" element={<Progress />} />
+            <Route path="/Admin/Dashboard" element={<AdminDashboard />} />
+            <Route path="/Admin/Dashboard/AddModule" element={<AddModule />} />
+            <Route path="/Admin/Quizzes" element={<AdmQuizzes />} />
+            <Route path="/Admin/QuizPage" element={<QuizPage />} />
+            <Route path="/Admin/AddQuiz" element={<AddQuiz />} />
+            <Route path="/Admin/Discussion" element={<AdmDiscussion />} />
+            <Route path="/Admin/DiscussionPage" element={<AdmDiscussionPage />} />
+            <Route path="/Admin/Dashboard/Content" element={<Content />} />
+            <Route path="/Admin/Progress" element={<Progress />} />
           </Route>
-
       </Routes>
     </>
   );
