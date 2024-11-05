@@ -32,25 +32,29 @@ function App() {
           <Route path="/Reset" element={<Reset />} />
           <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
           <Route path="/Main" element={<MainLayout />}>
-            <Route path="/Main/Dashboard" element={<Dashboard />} />
-            <Route path="/Main/Quizzes" element={<Quizzes />} />
-            <Route path="/Main/Discussion" element={<Discussion />} />
-            <Route path="/Main/DiscussionPage" element={<DiscussionPage />} />
-            <Route path="/Main/QuizPage" element={<QuizPage />} />
-            <Route path="/Main/Dashboard/Content" element={<Content />} />
-          </Route> 
-          <Route path="/AdminDashboard" element={<AdminDashboard />} />
-          <Route path="/AdminDashboard/AddModule" element={<AddModule />} />
-          <Route path="/AdminQuizzes" element={<AdmQuizzes />} />
-          <Route path="/AdminQuizPage" element={<QuizPage />} />
-          <Route path="/AdminAddQuiz" element={<AddQuiz />} />
-          <Route path="/AdminDiscussion" element={<AdmDiscussion />} />
-          <Route path="/AdminDiscussionPage" element={<AdmDiscussionPage />} />
-          <Route path="/AdminDashboard/Content" element={<Content />} />
-          <Route path="/AdminProgress" element={<Progress />} />
+            <Route path="Dashboard" element={<Dashboard />} />
+            <Route path="Quizzes" element={<Quizzes />} />
+            <Route path="Discussion" element={<Discussion />} />
+            <Route path="DiscussionPage" element={<DiscussionPage />} />
+            <Route path="QuizPage" element={<QuizPage />} />
+            <Route path="Dashboard/Content" element={<Content />} />
+          </Route>
+          <Route path="/Admin" element={<AdminLayout />}>
+            <Route path="Dashboard" element={<AdminDashboard />} />
+            <Route path="Dashboard/AddModule" element={<AddModule />} />
+            <Route path="Quizzes" element={<AdmQuizzes />} />
+            <Route path="QuizPage" element={<QuizPage />} />
+            <Route path="AddQuiz" element={<AddQuiz />} />
+            <Route path="Discussion" element={<AdmDiscussion />} />
+            <Route path="DiscussionPage" element={<AdmDiscussionPage />} />
+            <Route path="Dashboard/Content" element={<Content />} />
+            <Route path="Progress" element={<Progress />} />
+          </Route>
+
       </Routes>
     </>
   );
 }
 
 export default App;
+
