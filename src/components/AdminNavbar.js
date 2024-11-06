@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import './Navbar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -10,6 +10,7 @@ const AdminNavbar = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   const location = useLocation();
   const dropdownRef = useRef(null); // Reference for dropdown container
+  const navigate = useNavigate();
 
   useEffect(() => {
     const name = localStorage.getItem("Name");
@@ -44,6 +45,13 @@ const AdminNavbar = () => {
     { name: "Progress", path: "/Admin/Progress" }
   ];
 
+  const handleSignOut = async () => {
+    localStorage.removeItem("Email");
+    localStorage.removeItem("Name");
+    navigate("/login");
+
+  };
+
   return (
     <div className="w-1/6 bg-white p-6 border-r space-y-8">
       <div className="relative account" ref={dropdownRef}>
@@ -63,9 +71,9 @@ const AdminNavbar = () => {
             <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-cog"></i> Manage Account
             </Link>
-            <Link to="/login" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
+            <div onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-sign-out-alt"></i> Sign Out
-            </Link>
+            </div>
           </div>
         )}
       </div>

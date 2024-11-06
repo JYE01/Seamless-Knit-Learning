@@ -50,7 +50,6 @@ const Navbar = () => {
       localStorage.removeItem("Email");
       localStorage.removeItem("Name");
       navigate("/login");
-
   };
 
   return (
@@ -72,9 +71,9 @@ const Navbar = () => {
             <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-cog"></i> Manage Account
             </Link>
-            <Link onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
+            <div onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-sign-out-alt"></i> Sign Out
-            </Link>
+            </div>
           </div>
         )}
       </div>
