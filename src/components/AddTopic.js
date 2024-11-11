@@ -3,6 +3,12 @@ import React from 'react';
 const AddTopic = ({ showTopicModal, closeModal, handleAddTopic, newTitle, setNewTitle, newDescription, setNewDescription }) => {
   if (!showTopicModal) return null; // Don't render the modal if `showModal` is false
 
+  const handleClose = () => {
+    setNewTitle(''); // Reset title
+    setNewDescription(''); // Reset description
+    closeModal();
+  };
+
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -30,7 +36,7 @@ const AddTopic = ({ showTopicModal, closeModal, handleAddTopic, newTitle, setNew
           <div className="flex justify-end">
             <button
               type="button"
-              onClick={closeModal}
+              onClick={handleClose}
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-4"
             >
               Cancel

@@ -20,6 +20,12 @@ const AddVote = ({ showVoteModal, closeModal, handleAddVote, newTitle, setNewTit
     setVoteOptions(updatedOptions);
   };
 
+  const handleClose = () => {
+    setNewTitle(''); // Reset title
+    setNewDescription(''); // Reset description
+    closeModal();
+  };
+
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-full overflow-y-auto">
@@ -77,7 +83,7 @@ const AddVote = ({ showVoteModal, closeModal, handleAddVote, newTitle, setNewTit
           <div className="flex justify-end">
             <button
               type="button"
-              onClick={closeModal}
+              onClick={handleClose}
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-4"
             >
               Cancel

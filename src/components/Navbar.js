@@ -43,7 +43,6 @@ const Navbar = () => {
     { name: "Dashboard", path: "/Main/Dashboard" },
     { name: "Quizzes", path: "/Main/Quizzes" },
     { name: "Discussion", path: "/Main/Discussion" },
-    { name: "Search", path: "#" } // Change this path as needed
   ];
 
   const handleSignOut = async () => {
@@ -68,9 +67,6 @@ const Navbar = () => {
               <p className="font-bold">{Name}</p>
               <p className="text-sm text-gray-500">{Email}</p>
             </div>
-            <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
-              <i className="fas fa-cog"></i> Manage Account
-            </Link>
             <div onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
               <i className="fas fa-sign-out-alt"></i> Sign Out
             </div>

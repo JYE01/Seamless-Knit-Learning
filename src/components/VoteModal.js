@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { doc, updateDoc, getDoc, arrayUnion, increment } from 'firebase/firestore';
 
-const VoteModal = ({ showVote, closeModal, vote, userEmail, db, onVoteSubmit}) => {
+const VoteModal = ({ showVote, closeModal, vote, userEmail, db, onVoteSubmit }) => {
   const [pollOptions, setPollOptions] = useState([]);
   const [hasVoted, setHasVoted] = useState(false);
   const [totalVotes, setTotalVotes] = useState(0);
@@ -39,7 +39,6 @@ const VoteModal = ({ showVote, closeModal, vote, userEmail, db, onVoteSubmit}) =
 
       // Check if user has voted by searching UserVotes arrays
       const userVoteOption = Object.keys(voteData.UserVotes || {}).find(option => {
-        // Ensure UserVotes[option] is treated as an array
         const userVotesForOption = Array.isArray(voteData.UserVotes[option]) ? voteData.UserVotes[option] : [];
         return userVotesForOption.includes(userEmail);
       });
@@ -62,7 +61,6 @@ const VoteModal = ({ showVote, closeModal, vote, userEmail, db, onVoteSubmit}) =
 
     setSelectedOption(optionLabel);
 
-    // Update the selected option count and add user's email to the selected option in UserVotes
     await updateDoc(doc(db, 'Vote', vote.id), {
       [`Options.${optionLabel}`]: increment(1),
       [`UserVotes.${optionLabel}`]: arrayUnion(userEmail)
@@ -71,10 +69,8 @@ const VoteModal = ({ showVote, closeModal, vote, userEmail, db, onVoteSubmit}) =
     setHasVoted(true);
     toast.success("Your vote has been submitted!", { position: "top-center" });
 
-    // Re-fetch the data to update the poll results
     fetchVoteData();
 
-    // Call the onVoteSubmit callback to refresh votes in the parent component
     if (onVoteSubmit) {
       onVoteSubmit();
     }
@@ -108,22 +104,13 @@ const VoteModal = ({ showVote, closeModal, vote, userEmail, db, onVoteSubmit}) =
                 className="relative my-2 p-3 border rounded-lg flex items-center cursor-pointer"
                 onClick={() => !hasVoted && handleVote(option.label)}
                 style={{
-                  backgroundColor: isSelected ? '#d1e7ff' : '#f3f4f6',
-                  overflow: 'hidden',
+                  background: hasVoted
+                    ? `linear-gradient(to right, #b3d4fc ${percentage}%, #f3f4f6 ${percentage}%)`
+                    : '#f3f4f6',
                   transition: 'all 0.3s ease',
-                  position: 'relative'
                 }}
               >
-                {/* Background fill based on vote percentage */}
-                <div
-                  className="absolute inset-0 rounded-lg"
-                  style={{
-                    backgroundColor: '#a3a0f1',
-                    width: `${percentage}%`,
-                    zIndex: -1,
-                  }}
-                />
-                <div className="flex justify-between items-center w-full relative z-10">
+                <div className="flex justify-between items-center w-full">
                   <span className="font-semibold text-gray-700">
                     {option.label} {isSelected && '✓'}
                   </span>
