@@ -4,7 +4,7 @@ import AdminModule from '../components/AdminModule';
 
 const AdminDashboard = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [removeMode, setRemoveMode] = useState(false); // Track whether remove mode is active
+  const [removeMode, setRemoveMode] = useState(false);
   const dropdownRef = useRef(null); // Reference for dropdown container
 
   const toggleDropdown = () => {

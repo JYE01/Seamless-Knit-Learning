@@ -59,7 +59,6 @@ const AdmProgress = () => {
         <p className="text-sm text-gray-600">{overallProgress.toFixed(2)}% completed</p>
       </div>
 
-      {/* User Progress Table */}
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (

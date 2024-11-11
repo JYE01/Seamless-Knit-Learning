@@ -42,7 +42,7 @@ const AdminNavbar = () => {
     { name: "Dashboard", path: "/Admin/Dashboard" },
     { name: "Quizzes", path: "/Admin/Quizzes" },
     { name: "Discussion", path: "/Admin/Discussion" },
-    { name: "Progress", path: "/Admin/Progress" }
+    { name: "Module Progress", path: "/Admin/Progress" }
   ];
 
   const handleSignOut = async () => {
