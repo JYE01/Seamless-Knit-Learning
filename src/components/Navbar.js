@@ -48,6 +48,7 @@ const Navbar = () => {
   const handleSignOut = async () => {
       localStorage.removeItem("Email");
       localStorage.removeItem("Name");
+      sessionStorage.clear(); // Clear session storage as well
       navigate("/login");
   };
 
