@@ -6,7 +6,6 @@ const Home = () => {
 
   return (
     <div className="landing-page">
-      {/* Introduction Section */}
       <section className="intro-section">
         <h1>Welcome to the world of knitting</h1>
         <p>This is the learning platform for UTS student and alumni.</p>
@@ -20,7 +19,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Video Section */}
       <section className="video-section">
         <h2>Introduction to Knitting</h2>
         <p>Learn the basics of knitting with this comprehensive video guide.</p>
