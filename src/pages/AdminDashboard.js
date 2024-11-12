@@ -36,7 +36,7 @@ const AdminDashboard = () => {
   // }
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8" style={{ marginTop: "2.5rem" }}>Dashboard</h1>
       <div className="relative flex justify-end" ref={dropdownRef}>
         <button onClick={toggleDropdown} className="bg-blue-500 text-white px-3 py-1 rounded">
           <i className="fas fa-cog"></i> Edit

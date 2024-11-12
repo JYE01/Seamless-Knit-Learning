@@ -45,7 +45,7 @@ const AdmProgress = () => {
   }, 0) / users.length;
 
   return (
-    <div className="container mx-auto p-6" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto' }}>
+    <div className="container mx-auto p-6" style={{ maxHeight: 'calc(85vh - 100px)', overflowY: 'auto', marginTop:'2.5rem'}}>
       <h1 className="text-2xl font-semibold mb-4">Admin Dashboard: User Progress</h1>
       <div className="flex flex-col items-center mb-6">
         <h2 className="text-lg font-medium mb-2">Overall Progress</h2>

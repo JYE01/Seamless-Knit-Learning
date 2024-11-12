@@ -120,7 +120,7 @@ const AdminModule = ({ removeMode }) => {
     return (
         <div className="flex flex-col lg:flex-row">
             <div className="lg:w-7/8 w-full bg-white p-4 lg:p-6 shadow rounded-lg space-y-4 overflow-y-auto mx-auto" 
-                style={{ maxHeight: 'calc(95vh - 100px)' }}> 
+                style={{ maxHeight: 'calc(88vh - 100px)' }}> 
                 <ToastContainer />
                 {modules.map((module, index) => (
                     <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-md">

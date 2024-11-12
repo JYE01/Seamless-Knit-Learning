@@ -269,19 +269,21 @@ const AdmDiscuss = () => {
                     <p className="text-gray-500 text-sm">{discussion.Description}</p>
                   </div>
                   
-                  <button
-                    className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteClick(discussion.id);
-                    }}
-                    style={{
-                      fontSize: '1.2rem',
-                      background: 'none',
-                    }}
-                  >
-                    🗑️
-                  </button>
+                  {showTopicModal ? null : (
+                    <button
+                      className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(discussion.id);
+                      }}
+                      style={{
+                        fontSize: '1.2rem',
+                        background: 'none',
+                      }}
+                    >
+                      🗑️
+                    </button>
+                  )}
                 </div>
               ))
             ) : (
@@ -342,19 +344,21 @@ const AdmDiscuss = () => {
                     <p className="text-gray-500 text-sm">{vote.Description}</p>
                   </div>
 
-                  <button
-                    className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleVoteDeleteClick(vote.id);
-                    }}
-                    style={{
-                      fontSize: '1.2rem',
-                      background: 'none',
-                    }}
-                  >
-                    🗑️
-                  </button>
+                  {showVoteModal ? null : (
+                    <button
+                      className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleVoteDeleteClick(vote.id);
+                      }}
+                      style={{
+                        fontSize: '1.2rem',
+                        background: 'none',
+                      }}
+                    >
+                      🗑️
+                    </button>
+                  )}
                 </div>
               ))
             ) : (

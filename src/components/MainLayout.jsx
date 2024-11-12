@@ -7,7 +7,7 @@ const MainLayout = () => {
     <div className="flex h-screen bg-gray-100">
       <Navbar />
 
-      <div className="w-5/6 p-10">
+      <div className="main-content w-full lg:w-5/6">
         <Outlet /> 
       </div>
     </div>

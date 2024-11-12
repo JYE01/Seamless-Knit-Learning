@@ -231,7 +231,7 @@ const Discuss = () => {
                     <p className="text-gray-500 text-sm">{discussion.Description}</p>
                   </div>
 
-                  {discussion.PubEmail === email && (
+                  {discussion.PubEmail === email && !showTopicModal && (
                     <button
                       className="text-red-600 ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
                       onClick={(e) => {

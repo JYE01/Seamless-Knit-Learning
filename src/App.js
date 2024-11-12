@@ -4,7 +4,6 @@ import Home from "./pages/Home";
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Reset from "./pages/Reset";
-import GoogleSignUp from "./pages/GoogleSignUp";
 import { Routes, Route } from "react-router-dom";
 import MainLayout from './components/MainLayout';
 import AdminLayout from './components/AdminLayout';
@@ -32,7 +31,6 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/Reset" element={<Reset />} />
-          <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
           <Route path="/Main" element={<MainLayout />}>
             <Route path="Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="Quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />

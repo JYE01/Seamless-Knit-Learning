@@ -33,7 +33,7 @@ const AdmQuizzes = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Quizzes</h1>
+      <h1 className="text-3xl font-bold mb-8" style={{ marginTop: "2.5rem" }}>Quizzes</h1>
         
         <div className="relative flex justify-end items-center space-x-2" ref={dropdownRef}>
           <button className="bg-blue-500 text-white px-3 py-1 rounded">

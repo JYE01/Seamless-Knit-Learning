@@ -72,7 +72,7 @@ const AddQuiz = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md min-h-[400px] max-h-[700px] overflow-y-auto">
+    <div className="max-w-15xl mx-auto bg-white p-6 rounded-lg shadow-md min-h-[400px] max-h-[700px] overflow-y-auto" style={{marginTop:'2.5rem'}}>
       <button onClick={handleBack} className="bg-blue-500 text-white px-3 py-1 rounded mb-4">
         <i className="fas fa-arrow-left mr-2"></i>Back
       </button>

@@ -3,7 +3,6 @@ import { createUserWithEmailAndPassword} from "firebase/auth";
 import { auth, db } from "../Firebase"; 
 import {setDoc, getDoc, doc} from "firebase/firestore";
 import './Login&Signup.css';
-import googleLogo from '../assets/img/googleIcon.png'
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -153,15 +152,6 @@ function SignUp() {
               </span>
             </div>
           </div>
-          <div className="line"></div>
-          <div className="media-options">
-           <Link to="/GoogleSignUp">
-             <button className="field google pageButton">
-               <img src={googleLogo} alt="Google Icon" className="google-img" />
-               <span>Sign up with Google</span>
-             </button>
-            </Link>
-         </div>
       </div>
      </div>
     </div> 

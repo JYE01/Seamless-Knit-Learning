@@ -105,7 +105,7 @@ const QuizPage = () => {
     };
 
     return (
-        <div className="p-6 bg-white shadow rounded-lg">
+        <div className="p-6 bg-white shadow rounded-lg" style={{marginTop:'2.5rem'}}>
             <h1 className="text-2xl font-bold mb-6">{quiz.Name}</h1>
 
             {/* Always maintain max height and allow scrolling */}

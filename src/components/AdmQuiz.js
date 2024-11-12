@@ -85,19 +85,21 @@ const AdmQuiz = ({ removeMode }) => {
     };
 
     return (
-        <div className="bg-white p-6 shadow rounded-lg space-y-4">
+      <div className="flex flex-col lg:flex-row">
+        <div className="lg:w-7/8 w-full bg-white p-4 lg:p-6 shadow rounded-lg space-y-4 overflow-y-auto mx-auto" 
+         style={{ maxHeight: 'calc(85vh - 100px)' }}>
             <ToastContainer />
             {quizzes.map((quiz, index) => (
               <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-md">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-lg font-semibold mb-3">{quiz.Name}</h2>
+                  <h2 className="text-sm lg:text-lg font-semibold mb-3">{quiz.Name}</h2>
                   
                   <div className="flex items-center">
                     {/* Check if the quiz is completed */}
                     {completedQuizzes.includes(quiz.Name) && (
                       <div className="flex items-center mr-4">
-                          <span className="text-green-600 font-bold">Completed!</span>
-                          <svg className="w-6 h-6 text-green-600 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <span className="text-green-600 text-xs lg:text-sm font-bold">Completed!</span>
+                          <svg className="w-4 h-4 lg:w-6 lg:h-6 text-green-600 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                           </svg>
                       </div>
@@ -118,7 +120,7 @@ const AdmQuiz = ({ removeMode }) => {
                     ) : (
                       <button 
                         onClick={() => handleQuizClick(quiz)}
-                        className="bg-blue-500 text-white px-3 py-1 rounded"
+                        className="text-xs lg:text-sm bg-blue-500 text-white px-3 py-1 rounded"
                       >
                         Take Quiz
                       </button>
@@ -152,6 +154,7 @@ const AdmQuiz = ({ removeMode }) => {
                 </div>
             )}
         </div>
+     </div>
     );
 };
 

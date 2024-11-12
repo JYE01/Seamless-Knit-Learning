@@ -4,7 +4,6 @@ import { auth, db } from "../Firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { collection, query, getDocs, getFirestore, where } from 'firebase/firestore';
 import './Login&Signup.css';
-import googleLogo from '../assets/img/googleIcon.png';
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -89,55 +88,6 @@ function LogIn() {
     }
   };
 
-  const LoginWithGoogle = async () => {
-    if (isGoogleSigningIn) return;
-    setIsGoogleSigningIn(true);
-  
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const googleEmail = user.email;
-  
-      // Fetch the user from Firestore by email
-      const userDoc = await getDoc(doc(db, "Users", user.uid));
-      const userData = userDoc.data();
-      const userName = userData.Name;
-      localStorage.setItem("Name", userName);
-      localStorage.setItem("Email", googleEmail);
-  
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-  
-        if (userData.Email === googleEmail) {
-          console.log("User found in Firestore, logging in...");
-          toast.success("Logged in successfully with Google!", {
-            position: "top-center",
-          });
-          navigate("/Main/Dashboard");
-        } else {
-          console.log("No matching email in Firestore");
-          toast.error("Google account isn't signed up!", {
-            position: "top-center",
-          });
-        }
-      } else {
-        // User document does not exist in Firestore
-        console.log("No user document found in Firestore");
-        toast.error("Google account isn't signed up!", {
-          position: "top-center",
-        });
-      }
-    } catch (error) {
-      console.error("Error during Google login:", error.message);
-      toast.error("Error occurred during login!", {
-        position: "top-center",
-      });
-    } finally {
-      setIsGoogleSigningIn(false); // Reset the sign-in state
-    }
-  };
-
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -191,17 +141,6 @@ function LogIn() {
           </form>
           <div className="form-link">
             <span>Don't have an account? <Link to="/Signup" className="link signup-link">Signup</Link></span>
-          </div>
-          <div className="line"></div>
-          <div className="media-options">
-            <button
-              className="field google pageButton"
-              onClick={LoginWithGoogle}
-              disabled={isGoogleSigningIn}
-            >
-              <img src={googleLogo} alt="Google Icon" className="google-img" />
-              <span>Login with Google</span>
-            </button>
           </div>
         </div>
       </div>

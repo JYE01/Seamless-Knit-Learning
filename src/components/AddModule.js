@@ -135,7 +135,7 @@ const pdfHandler = () => {
   ), []); 
 
   return (
-    <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-15xl mx-auto" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto' }}>
+    <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-15xl mx-auto" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto', marginTop:'2.5rem'}} >
       <h2 className="text-2xl font-semibold mb-4">Upload Learning Content</h2>
       
       {/* Name Field */}

@@ -51,7 +51,7 @@ const QuizProgress = () => {
     }
 
   return (
-    <div className="container mx-auto p-6" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto' }}>
+    <div className="container mx-auto p-6" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto', marginTop:'2.5rem'}}>
       <button onClick={handleBack} className="bg-blue-500 text-white px-3 py-1 rounded mb-4">
         <i className="fas fa-arrow-left mr-2"></i>Back
       </button>

@@ -24,7 +24,7 @@ const AdmDiscussion = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Discussion</h1>
+      <h1 className="text-3xl font-bold mb-8" style={{ marginTop: "2.5rem" }}>Discussion</h1>
       <div className="mb-6">
         <input
           type="text"
