@@ -118,105 +118,108 @@ const AdminModule = ({ removeMode }) => {
     };
 
     return (
-        <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-15xl mx-auto" style={{ maxHeight: 'calc(87vh - 100px)', overflowY: 'auto' }}> 
-            <ToastContainer />
-            {modules.map((module, index) => (
-                <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-md">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-lg font-semibold mb-3">{module.name}</h2>
-                        {removeMode ? (
-                            <button 
-                                onClick={() => handleDeleteClick(module.id)} 
-                                className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
-                                style={{
-                                    fontSize: '1.2rem',
-                                    background: 'none',
-                                }}
-                            >
-                                🗑️
-                            </button>
-                        ) : ( 
-                            <button
-                                onClick={() => toggleModule(index)}
-                                className="bg-blue-500 text-white px-3 py-1 rounded"
-                            >
-                                {openModules[index] ? 'Hide All' : 'Show All'}
-                            </button>
-                        )}
-                    </div>
-                    <div className="h-3 bg-gray-300 rounded-full">
-                        <div
-                            className="h-3 bg-gray-700 rounded-full"
-                            style={{ width: `${userProgress[module.name]?.progress || 0}%` }}
-                        ></div>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">
-                        Progress: {userProgress[module.name]?.progress || 0}%
-                    </p>
-                    {userProgress[module.name]?.completed && <p className="text-sm text-green-500 mt-2">Module Completed!</p>}
-
-                    {/* Conditionally render subtopics */}
-                    {openModules[index] && (
-                        <div className="mt-4">
-                            {module.subtopics && module.subtopics.length > 0 ? (
-                                <ul className="space-y-2 pl-4">
-                                    {module.subtopics.map((subtopic, subIndex) => (
-                                        <li key={subIndex} className="text-gray-700 flex items-center">
-                                            <i className="mr-2">📄</i>
-                                            <p
-                                                onClick={() => handleTopicClick(module.id, subIndex)}
-                                                className="cursor-pointer hover:text-blue-500 focus:text-blue-500 transition-colors duration-200"
-                                                tabIndex="0"
-                                            >
-                                                {subtopic.topicName}
-                                            </p>
-                                            {removeMode ? (
-                                                <button 
-                                                    onClick={() => handleDeleteSubTopic(module.id, subIndex)} 
-                                                    className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
-                                                    style={{
-                                                        fontSize: '1.2rem',
-                                                        background: 'none',
-                                                    }}
-                                                >
-                                                    🗑️
-                                                </button>
-                                            ) : (
-                                                <></>
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-gray-500">No subtopics available</p>
+        <div className="flex flex-col lg:flex-row">
+            <div className="lg:w-7/8 w-full bg-white p-4 lg:p-6 shadow rounded-lg space-y-4 overflow-y-auto mx-auto" 
+                style={{ maxHeight: 'calc(95vh - 100px)' }}> 
+                <ToastContainer />
+                {modules.map((module, index) => (
+                    <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-md">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-lg font-semibold mb-3">{module.name}</h2>
+                            {removeMode ? (
+                                <button 
+                                    onClick={() => handleDeleteClick(module.id)} 
+                                    className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
+                                    style={{
+                                        fontSize: '1.2rem',
+                                        background: 'none',
+                                    }}
+                                >
+                                    🗑️
+                                </button>
+                            ) : ( 
+                                <button
+                                    onClick={() => toggleModule(index)}
+                                    className="bg-blue-500 text-white px-3 py-1 rounded"
+                                >
+                                    {openModules[index] ? 'Hide All' : 'Show All'}
+                                </button>
                             )}
                         </div>
-                    )}
-                </div>
-            ))}
-            {/* Delete Confirmation Modal */}
-            {showDeleteModal && (
-                <div className="fixed z-10 inset-0 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
-                        <p>Are you sure you want to delete this {subtopicToDelete.moduleId ? "subtopic" : "module"}?</p>
-                        <div className="mt-6 flex justify-end space-x-4">
-                            <button
-                                className="bg-gray-300 px-4 py-2 rounded-lg"
-                                onClick={() => setShowDeleteModal(false)} 
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-all"
-                                onClick={subtopicToDelete.moduleId ? handleDeleteSubtopic : handleDeleteModule} 
-                            >
-                                Delete
-                            </button>
+                        <div className="h-3 bg-gray-300 rounded-full">
+                            <div
+                                className="h-3 bg-gray-700 rounded-full"
+                                style={{ width: `${userProgress[module.name]?.progress || 0}%` }}
+                            ></div>
+                        </div>
+                        <p className="text-sm text-gray-500 mt-2">
+                            Progress: {userProgress[module.name]?.progress || 0}%
+                        </p>
+                        {userProgress[module.name]?.completed && <p className="text-sm text-green-500 mt-2">Module Completed!</p>}
+
+                        {/* Conditionally render subtopics */}
+                        {openModules[index] && (
+                            <div className="mt-4">
+                                {module.subtopics && module.subtopics.length > 0 ? (
+                                    <ul className="space-y-2 pl-4">
+                                        {module.subtopics.map((subtopic, subIndex) => (
+                                            <li key={subIndex} className="text-gray-700 flex items-center">
+                                                <i className="mr-2">📄</i>
+                                                <p
+                                                    onClick={() => handleTopicClick(module.id, subIndex)}
+                                                    className="cursor-pointer hover:text-blue-500 focus:text-blue-500 transition-colors duration-200"
+                                                    tabIndex="0"
+                                                >
+                                                    {subtopic.topicName}
+                                                </p>
+                                                {removeMode ? (
+                                                    <button 
+                                                        onClick={() => handleDeleteSubTopic(module.id, subIndex)} 
+                                                        className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
+                                                        style={{
+                                                            fontSize: '1.2rem',
+                                                            background: 'none',
+                                                        }}
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                ) : (
+                                                    <></>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-gray-500">No subtopics available</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                ))}
+                {/* Delete Confirmation Modal */}
+                {showDeleteModal && (
+                    <div className="fixed z-10 inset-0 flex items-center justify-center">
+                        <div className="bg-white p-6 rounded-lg shadow-lg">
+                            <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+                            <p>Are you sure you want to delete this {subtopicToDelete.moduleId ? "subtopic" : "module"}?</p>
+                            <div className="mt-6 flex justify-end space-x-4">
+                                <button
+                                    className="bg-gray-300 px-4 py-2 rounded-lg"
+                                    onClick={() => setShowDeleteModal(false)} 
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-all"
+                                    onClick={subtopicToDelete.moduleId ? handleDeleteSubtopic : handleDeleteModule} 
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }

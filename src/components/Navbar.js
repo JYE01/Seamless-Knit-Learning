@@ -35,8 +35,6 @@ const Navbar = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-
-    // Clean up the event listener on component unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -46,24 +44,22 @@ const Navbar = () => {
     { name: "Dashboard", path: "/Main/Dashboard" },
     { name: "Quizzes", path: "/Main/Quizzes" },
     { name: "Discussion", path: "/Main/Discussion" },
-    { name: "Search", path: "#" } // Change this path as needed
   ];
 
   const handleSignOut = async () => {
       localStorage.removeItem("Email");
       localStorage.removeItem("Name");
+      sessionStorage.clear();
       navigate("/login");
   };
 
   return (
     <div className="w-1/6 bg-white p-6 border-r space-y-8">
       <div className="navbar-container">
-        {/* Toggle Button for Mobile */}
         <button className="toggle-button" onClick={toggleNav}>
           <i className="fas fa-bars text-2xl"></i>
         </button>
 
-        {/* Sidebar Links - Visible only when navVisible is true on mobile */}
         <div className={`navbar ${navVisible ? 'navbar-visible' : ''}`}>
           <div className="relative account" ref={dropdownRef}>
             <button onClick={toggleDropdown} className="flex items-center gap-2" style={{ background: 'none' }}>
@@ -79,9 +75,6 @@ const Navbar = () => {
                   <p className="font-bold">{Name}</p>
                   <p className="text-sm text-gray-500">{Email}</p>
                 </div>
-                <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
-                  <i className="fas fa-cog"></i> Manage Account
-                </Link>
                 <div onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full">
                   <i className="fas fa-sign-out-alt"></i> Sign Out
                 </div>
@@ -104,7 +97,7 @@ const Navbar = () => {
                     className={`block text-lg cursor-pointer py-2 px-4 rounded-lg 
                       ${location.pathname === item.path ? 'bg-blue-500 text-white' : 'text-gray-700'}
                       hover:bg-blue-200`}
-                    onClick={() => setNavVisible(false)} // Hide nav on mobile after clicking a link
+                    onClick={() => setNavVisible(false)}
                   >
                     {item.name}
                   </Link>
