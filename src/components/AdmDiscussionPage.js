@@ -181,7 +181,7 @@ const AdmDiscussionPage = () => {
             {filteredResponses.length > 0 ? (
               filteredResponses.map((response, index) => (
                 <div key={index} className="flex items-center p-4 border-b border-gray-200">
-                  <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                  <div className="flex-shrink-0 w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm lg:text-lg mr-4">
                     {response.Name.charAt(0).toUpperCase()}
                   </div>
                   <div className="ml-4 flex-grow">

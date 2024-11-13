@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Firebase from '../Firebase'; 
-import { collection, query, where, getDocs, getFirestore, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, getFirestore, doc, deleteDoc, updateDoc, getDoc,  deleteField  } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -61,8 +61,8 @@ const AdminModule = ({ removeMode }) => {
         }
     };
 
-    const handleDeleteClick = (moduleId) => {
-        setModuleToDelete(moduleId);
+    const handleDeleteClick = (moduleId, moduleName) => {
+        setModuleToDelete({ id: moduleId, name: moduleName });
         setShowDeleteModal(true);
     };
 
@@ -73,13 +73,32 @@ const AdminModule = ({ removeMode }) => {
 
     const handleDeleteModule = async () => {
         try {
-            await deleteDoc(doc(db, 'Module', moduleToDelete));
-            setModules(modules.filter(module => module.id !== moduleToDelete)); 
+            // Delete the module from the "Module" collection
+            await deleteDoc(doc(db, "Module", moduleToDelete.id));
+    
+            // Remove the module from the local state
+            setModules(modules.filter((module) => module.id !== moduleToDelete.id));
+    
+            // Delete the module field from each user's "progress"
+            const usersCollection = collection(db, "Users");
+            const userDocs = await getDocs(usersCollection);
+    
+            userDocs.forEach(async (userDoc) => {
+                const userRef = doc(db, "Users", userDoc.id);
+    
+                // Use the module name to delete the specific progress field
+                await updateDoc(userRef, {
+                    [`progress.${moduleToDelete.name}`]: deleteField(),
+                });
+            });
+    
             toast.success("Module deleted successfully!", {
                 position: "top-center",
             });
-            setShowDeleteModal(false); 
-            setModuleToDelete(null); 
+    
+            // Close the delete modal and reset the selected module to delete
+            setShowDeleteModal(false);
+            setModuleToDelete(null);
         } catch (error) {
             console.error("Error deleting module: ", error);
             toast.error("Error deleting module!", {
@@ -132,7 +151,7 @@ const AdminModule = ({ removeMode }) => {
                             <h2 className="text-lg font-semibold mb-3">{module.name}</h2>
                             {removeMode ? (
                                 <button 
-                                    onClick={() => handleDeleteClick(module.id)} 
+                                    onClick={() => handleDeleteClick(module.id, module.name)} 
                                     className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
                                     style={{
                                         fontSize: '1.2rem',

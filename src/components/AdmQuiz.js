@@ -8,6 +8,8 @@ import {
   getFirestore,
   doc,
   deleteDoc,
+  deleteField,
+  updateDoc,
 } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -62,20 +64,37 @@ const AdmQuiz = ({ removeMode }) => {
     };
 
     // Show delete confirmation modal
-    const handleDeleteClick = (quizId) => {
-        setQuizToDelete(quizId);
+    const handleDeleteClick = (quizId, quizName) => {
+        setQuizToDelete({ id: quizId, name: quizName });
         setShowDeleteModal(true); // Show the confirmation modal
-    };
+    };    
 
     // Delete quiz after confirmation
     const handleDeleteQuiz = async () => {
         try {
-            await deleteDoc(doc(db, 'Quizzes', quizToDelete));
-            setQuizzes(quizzes.filter(quiz => quiz.id !== quizToDelete)); // Update UI after deletion
+            // Delete the quiz from the "Quizzes" collection
+            await deleteDoc(doc(db, 'Quizzes', quizToDelete.id));
+            setQuizzes(quizzes.filter(quiz => quiz.id !== quizToDelete.id)); // Update UI after deletion
+    
+            // Delete the quiz progress from each user's "Quiz" field
+            const usersCollection = collection(db, 'Users');
+            const userDocs = await getDocs(usersCollection);
+    
+            userDocs.forEach(async (userDoc) => {
+                const userRef = doc(db, 'Users', userDoc.id);
+    
+                // Use the quiz name to delete the specific quiz progress field in "Quiz"
+                await updateDoc(userRef, {
+                    [`Quiz.${quizToDelete.name}`]: deleteField(),
+                });
+            });
+    
             toast.success("Quiz deleted successfully!", {
                 position: "top-center",
             });
+    
             setShowDeleteModal(false); // Close the modal
+            setQuizToDelete(null); // Reset quizToDelete
         } catch (error) {
             console.error("Error deleting quiz: ", error);
             toast.error("Error deleting quiz!", {
@@ -83,6 +102,7 @@ const AdmQuiz = ({ removeMode }) => {
             });
         }
     };
+    
 
     return (
       <div className="flex flex-col lg:flex-row">
@@ -108,7 +128,7 @@ const AdmQuiz = ({ removeMode }) => {
                     {/* If removeMode is active, show 🗑️ icon for deleting */}
                     {removeMode ? (
                       <button 
-                        onClick={() => handleDeleteClick(quiz.id)} // Show delete confirmation
+                        onClick={() => handleDeleteClick(quiz.id, quiz.Name)} // Show delete confirmation
                         className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
                         style={{
                             fontSize: '1.2rem',
