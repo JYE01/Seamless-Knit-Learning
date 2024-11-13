@@ -181,7 +181,7 @@ const DiscussionPage = () => {
             {filteredResponses.length > 0 ? (
               filteredResponses.map((response, index) => (
                 <div key={index} className="flex items-center p-4 border-b border-gray-200">
-                  <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                  <div className="rounded-full bg-blue-500 text-white flex items-center justify-center">
                     {response.Name.charAt(0).toUpperCase()}
                   </div>
                   <div className="ml-4 flex-grow">

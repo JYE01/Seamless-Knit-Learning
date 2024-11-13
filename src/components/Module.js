@@ -10,6 +10,10 @@ const Module = () => {
   const db = getFirestore(Firebase);
   const navigate = useNavigate();
   const email = localStorage.getItem("Email");
+  const df = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0, 
+    maximumFractionDigits: 2, 
+  });
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -17,7 +21,6 @@ const Module = () => {
       const moduleSnapshot = await getDocs(moduleQuery);
       const moduleData = moduleSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setModules(moduleData);
-
       const userQuery = query(collection(db, 'Users'), where('Email', '==', email));
       const userSnapShot = await getDocs(userQuery);
 
@@ -68,7 +71,7 @@ const Module = () => {
                 ></div>
               </div>
               <p className="text-sm text-gray-500 mt-2">
-                Progress: {progress}%
+                Progress: {df.format(progress)}%
               </p>
               {isCompleted && <p className="text-sm text-green-500 mt-2">Module Completed!</p>}
               {openModules[index] && (

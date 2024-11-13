@@ -8,6 +8,10 @@ const AdmProgress = () => {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const db = getFirestore(Firebase);
+  const df = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0, // Display no decimals for whole numbers
+    maximumFractionDigits: 2, // Allow up to 2 decimal places
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,7 +90,7 @@ const AdmProgress = () => {
                   <td className="py-2 px-4 border-b">
                     {Object.keys(user.progress || {}).map(moduleId => (
                       <div key={moduleId}>
-                        <p><strong>{moduleId}:</strong> {user.progress[moduleId].progress}%</p>
+                        <p><strong>{moduleId}:</strong> {df.format(user.progress[moduleId].progress)}%</p>
                       </div>
                     ))}
                   </td>

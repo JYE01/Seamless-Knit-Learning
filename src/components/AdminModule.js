@@ -15,6 +15,10 @@ const AdminModule = ({ removeMode }) => {
     const db = getFirestore(Firebase);
     const navigate = useNavigate();
     const email = localStorage.getItem("Email");
+    const df = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 0, // Display no decimals for whole numbers
+        maximumFractionDigits: 2, // Allow up to 2 decimal places
+      });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -153,7 +157,7 @@ const AdminModule = ({ removeMode }) => {
                             ></div>
                         </div>
                         <p className="text-sm text-gray-500 mt-2">
-                            Progress: {userProgress[module.name]?.progress || 0}%
+                            Progress: {df.format(userProgress[module.name]?.progress || 0)}%
                         </p>
                         {userProgress[module.name]?.completed && <p className="text-sm text-green-500 mt-2">Module Completed!</p>}
 

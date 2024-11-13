@@ -79,6 +79,10 @@ const pdfHandler = () => {
       setSubtopics([...subtopics, newSubtopic]); 
       setTopicName('');
       setParagraph('');
+      if (quillRef.current) {
+        const editor = quillRef.current.getEditor();
+        editor.setText(''); // This clears the Quill editor
+      }
     } else {
       alert('Please fill in both the topic name and content!');
     }
