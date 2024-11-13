@@ -81,7 +81,7 @@ const pdfHandler = () => {
       setParagraph('');
       if (quillRef.current) {
         const editor = quillRef.current.getEditor();
-        editor.setText(''); // This clears the Quill editor
+        editor.setText(''); 
       }
     } else {
       alert('Please fill in both the topic name and content!');
@@ -120,9 +120,8 @@ const pdfHandler = () => {
             [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
             [{ size: [] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
             ['link', 'image','video'],
-            [{ 'align': [] }],
             ['clean'],
           ],
           handlers: {
@@ -142,7 +141,6 @@ const pdfHandler = () => {
     <div className="bg-white p-6 shadow rounded-lg space-y-4 max-w-15xl mx-auto" style={{ maxHeight: 'calc(95vh - 100px)', overflowY: 'auto', marginTop:'2.5rem'}} >
       <h2 className="text-2xl font-semibold mb-4">Upload Learning Content</h2>
       
-      {/* Name Field */}
       <input
         type="text"
         value={name}
@@ -151,7 +149,6 @@ const pdfHandler = () => {
         className="mb-4 p-2 border border-gray-300 rounded-md w-full"
       />
 
-      {/* Topic Name Field */}
       <input
         type="text"
         value={topicName}
@@ -160,10 +157,8 @@ const pdfHandler = () => {
         className="mb-4 p-2 border border-gray-300 rounded-md w-full"
       />
 
-      {/* ReactQuill Editor */}
       {memoizedQuill}
 
-      {/* Add Subtopic Button */}
       <button
         onClick={addSubtopic}
         className="w-full bg-green-500 text-white py-2 px-4 rounded-md mb-4"
@@ -171,7 +166,6 @@ const pdfHandler = () => {
         Add Subtopic
       </button>
 
-      {/* Subtopics List */}
       <div className="mb-4">
         <label className="block text-gray-700">Subtopics</label>
         <ul className="list-disc list-inside">
@@ -184,7 +178,6 @@ const pdfHandler = () => {
         </ul>
       </div>
 
-      {/* Upload Button */}
       <button
         onClick={handleUpload}
         disabled={loading}

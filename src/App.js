@@ -19,7 +19,7 @@ import AdmDiscussionPage from './components/AdmDiscussionPage.js';
 import Content from './components/Content.js';
 import AdmQuizzes from './pages/AdmQuizzes.js';
 import AddQuiz from './components/AddQuiz.js';
-import Progress from './pages/Progress.js';
+import AdmProgress from './components/AdmProgress.js';
 import QuizProgress from './components/QuizProgress.js';
 import ProtectedRoute from './ProtectedRoute.js';
 
@@ -49,7 +49,7 @@ function App() {
             <Route path="Discussion" element={<ProtectedRoute><AdmDiscussion /></ProtectedRoute>} />
             <Route path="DiscussionPage" element={<ProtectedRoute><AdmDiscussionPage /></ProtectedRoute>} />
             <Route path="Dashboard/Content" element={<ProtectedRoute><Content /></ProtectedRoute>} />
-            <Route path="Progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
+            <Route path="Progress" element={<ProtectedRoute><AdmProgress /></ProtectedRoute>} />
           </Route>
       </Routes>
     </>

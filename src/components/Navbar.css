@@ -1,9 +1,7 @@
-/* Navbar container for toggle behavior on mobile */
 .navbar-container {
     position: relative;
 }
 
-/* Toggle button - visible only on mobile */
 .toggle-button {
     display: none;
     background: none;
@@ -15,7 +13,6 @@
     z-index: 20;
 }
 
-/* Default Navbar styles for desktop */
 .navbar {
     display: block;
     width: 250px;
@@ -28,19 +25,16 @@
     left: 0;
 }
 
-/* Adjustments for when the navbar is visible on mobile */
 .navbar-visible {
     display: block;
 }
 
-/* Account section styling */
 .account {
     display: flex;
     align-items: center;
     cursor: pointer;
 }
 
-/* Sidebar links */
 .navbar nav ul {
     list-style-type: none;
     padding: 0;
@@ -69,12 +63,10 @@
     color: white;
 }
 
-/* Dropdown menu adjustment */
 .relative.account .dropdown-content {
-    margin-top: 100px; /* Adjusted spacing */
+    margin-top: 100px; 
 }
 
-/* Media query for mobile and tablet devices */
 @media (max-width: 768px) {
     .toggle-button {
         display: block;
@@ -99,7 +91,6 @@
         transform: translateX(0);
     }
 
-    /* Additional styles for sidebar animation */
     .navbar {
         transform: translateX(-100%);
     }
@@ -109,7 +100,6 @@
     }
 }
 
-/* Main content styling */
 .main-content {
     margin-left: 270px;
     padding: 20px;

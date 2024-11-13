@@ -9,8 +9,8 @@ const AdmProgress = () => {
   const [loading, setLoading] = useState(true);
   const db = getFirestore(Firebase);
   const df = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0, // Display no decimals for whole numbers
-    maximumFractionDigits: 2, // Allow up to 2 decimal places
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
   });
 
   useEffect(() => {

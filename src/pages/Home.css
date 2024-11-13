@@ -1,4 +1,3 @@
-/* Main page styles */
 .landing-page {
     background-color: #fff;
     color: black;
@@ -6,7 +5,6 @@
     text-align: center;
   }
   
-  /* Introduction section */
   .intro-section {
     margin-top: 50px;
     padding: 20px;
@@ -50,16 +48,14 @@
     background-color: #333e57;
   }
   
-  /* Video section */
   .video-section {
     margin-top: 50px;
     padding: 20px;
-    /* background-color: #1a1a1a; */
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center the video horizontally */
-    justify-content: center; /* Center the video vertically */
-    min-height: 60vh; /* Adjust this value to your needs */
+    align-items: center; 
+    justify-content: center; 
+    min-height: 60vh; 
   }
   
   .video-section h2 {
@@ -74,7 +70,7 @@
   
   .youtube-video iframe {
   width: 1000px; 
-  height: 500px;  /* Increase height to maintain aspect ratio */
+  height: 500px; 
   border-radius: 10px;
   }
 
@@ -97,7 +93,7 @@
       font-size: 1.5rem;
     }
     .youtube-video {
-      padding-bottom: 56.25%; /* Keeps the aspect ratio */
+      padding-bottom: 56.25%; 
     }
 
     .youtube-video iframe {
@@ -125,7 +121,7 @@
       font-size: 1.25rem;
     }
     .youtube-video {
-      padding-bottom: 56.25%; /* Keeps the aspect ratio */
+      padding-bottom: 56.25%; 
     }
 
     .youtube-video iframe {

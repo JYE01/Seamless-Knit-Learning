@@ -16,8 +16,8 @@ const AdminModule = ({ removeMode }) => {
     const navigate = useNavigate();
     const email = localStorage.getItem("Email");
     const df = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 0, // Display no decimals for whole numbers
-        maximumFractionDigits: 2, // Allow up to 2 decimal places
+        minimumFractionDigits: 0, 
+        maximumFractionDigits: 2, 
       });
 
     useEffect(() => {
@@ -73,20 +73,13 @@ const AdminModule = ({ removeMode }) => {
 
     const handleDeleteModule = async () => {
         try {
-            // Delete the module from the "Module" collection
             await deleteDoc(doc(db, "Module", moduleToDelete.id));
-    
-            // Remove the module from the local state
             setModules(modules.filter((module) => module.id !== moduleToDelete.id));
-    
-            // Delete the module field from each user's "progress"
             const usersCollection = collection(db, "Users");
             const userDocs = await getDocs(usersCollection);
     
             userDocs.forEach(async (userDoc) => {
                 const userRef = doc(db, "Users", userDoc.id);
-    
-                // Use the module name to delete the specific progress field
                 await updateDoc(userRef, {
                     [`progress.${moduleToDelete.name}`]: deleteField(),
                 });
@@ -95,8 +88,6 @@ const AdminModule = ({ removeMode }) => {
             toast.success("Module deleted successfully!", {
                 position: "top-center",
             });
-    
-            // Close the delete modal and reset the selected module to delete
             setShowDeleteModal(false);
             setModuleToDelete(null);
         } catch (error) {
@@ -180,7 +171,6 @@ const AdminModule = ({ removeMode }) => {
                         </p>
                         {userProgress[module.name]?.completed && <p className="text-sm text-green-500 mt-2">Module Completed!</p>}
 
-                        {/* Conditionally render subtopics */}
                         {openModules[index] && (
                             <div className="mt-4">
                                 {module.subtopics && module.subtopics.length > 0 ? (
@@ -219,7 +209,6 @@ const AdminModule = ({ removeMode }) => {
                         )}
                     </div>
                 ))}
-                {/* Delete Confirmation Modal */}
                 {showDeleteModal && (
                     <div className="fixed z-10 inset-0 flex items-center justify-center">
                         <div className="bg-white p-6 rounded-lg shadow-lg">
