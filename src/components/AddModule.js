@@ -117,8 +117,7 @@ const pdfHandler = () => {
       modules={{
         toolbar: {
           container: [
-            [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-            [{ size: [] }],
+            [{ 'header': '1' }, { 'header': '2' }, { 'font': ["Sans Serif", "Serif", "Monospace", "Arial"] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
             [{ 'indent': '-1' }, { 'indent': '+1' }],
             ['link', 'image','video'],
