@@ -76,6 +76,7 @@ node_modules and build folders won't be pushed to main or any other branches.
 <Firebase.jsx>
 This is a config file to enable connection between react.js and firebase database.
 We have used a firebase as a cloud database for this project.
-To use firebase database, you must configure with your own API keys and app id.
-------------------------------------------------------------------------------------------
+To use your firebase database, you must configure with your own API keys and app id.
+The codes are based on the firebase database structure. You need to either follow the data structure given by us or you need to change some codes related to retrieving and updating the data.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Now,,,Happy Coding~
