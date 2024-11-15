@@ -1,28 +1,25 @@
 import React, { useState } from 'react';
 
 const AddVote = ({ showVoteModal, closeModal, handleAddVote, newTitle, setNewTitle, newDescription, setNewDescription, voteOptions, setVoteOptions }) => {
-  if (!showVoteModal) return null; // Don't render the modal if `showVoteModal` is false
+  if (!showVoteModal) return null;
 
-  // Function to handle adding a new option field
   const addOptionField = () => {
     setVoteOptions([...voteOptions, '']);
   };
 
-  // Function to handle removing an option field
   const removeOptionField = (index) => {
     const updatedOptions = voteOptions.filter((_, idx) => idx !== index);
     setVoteOptions(updatedOptions);
   };
 
-  // Function to handle change in option inputs
   const handleOptionChange = (index, value) => {
     const updatedOptions = voteOptions.map((option, idx) => (idx === index ? value : option));
     setVoteOptions(updatedOptions);
   };
 
   const handleClose = () => {
-    setNewTitle(''); // Reset title
-    setNewDescription(''); // Reset description
+    setNewTitle(''); 
+    setNewDescription(''); 
     closeModal();
   };
 

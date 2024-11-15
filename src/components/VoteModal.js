@@ -25,19 +25,15 @@ const VoteModal = ({ showVote, closeModal, vote, userEmail, db, onVoteSubmit }) 
     const voteDoc = await getDoc(doc(db, 'Vote', vote.id));
     if (voteDoc.exists()) {
       const voteData = voteDoc.data();
-
-      // Get options and vote counts
       const formattedOptions = Object.keys(voteData.Options || {}).map(option => ({
         label: option,
         votes: voteData.Options[option] || 0
       }));
       setPollOptions(formattedOptions);
 
-      // Calculate total votes
       const totalVotes = formattedOptions.reduce((acc, option) => acc + option.votes, 0);
       setTotalVotes(totalVotes);
 
-      // Check if user has voted by searching UserVotes arrays
       const userVoteOption = Object.keys(voteData.UserVotes || {}).find(option => {
         const userVotesForOption = Array.isArray(voteData.UserVotes[option]) ? voteData.UserVotes[option] : [];
         return userVotesForOption.includes(userEmail);

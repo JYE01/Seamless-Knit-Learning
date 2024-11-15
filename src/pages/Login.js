@@ -43,15 +43,13 @@ function LogIn() {
   const handleAdminLogin = async (e) => {
     e.preventDefault();
     try {
-      // Query the Users collection where the Email field matches the entered email
       const usersRef = collection(db, "Users");
       const querySnapshot = await getDocs(query(usersRef, where("Email", "==", email)));
 
       if (!querySnapshot.empty) {
-        // Assuming the email is unique, there should only be one matching document
         const userDoc = querySnapshot.docs[0];
         const userData = userDoc.data();
-        const storedPassword = userData.Password; // Assuming you store passwords in plaintext (which is not secure)
+        const storedPassword = userData.Password;
 
         if (storedPassword === password) {
           console.log("Admin logged in successfully");
@@ -60,7 +58,7 @@ function LogIn() {
           toast.success("Logged in as Admin!", {
             position: "top-center",
           });
-          navigate("/Admin/Dashboard"); // Redirect to admin dashboard
+          navigate("/Admin/Dashboard");
         } else {
           toast.error("Incorrect password for admin login", {
             position: "top-center",
@@ -82,9 +80,9 @@ function LogIn() {
 
   const handleSubmit = (e) => {
     if (email.includes(".adm@")) {
-      handleAdminLogin(e); // Call admin login function
+      handleAdminLogin(e);
     } else {
-      handleLogIn(e); // Call regular user login function
+      handleLogIn(e);
     }
   };
 

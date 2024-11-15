@@ -3,20 +3,17 @@ import Discuss from "../components/Discuss";
 
 const Discussion = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm); // Debounced search term
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
   useEffect(() => {
-    // Set up a debounce delay
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
       localStorage.setItem('searchTerm', searchTerm);
-    }, 300); // 300ms debounce delay
-
-    // Clear the timeout if the input changes before the timeout is completed
+    }, 300);
     return () => {
       clearTimeout(handler);
     };

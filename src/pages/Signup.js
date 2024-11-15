@@ -23,7 +23,7 @@ function SignUp() {
       try {
         const accessCodeDoc = await getDoc(doc(db, "AccessCode", "240907"));
         if (accessCodeDoc.exists()) {
-          const firebaseAccessCode = accessCodeDoc.data().code;  // Retrieve the access code from Firestore
+          const firebaseAccessCode = accessCodeDoc.data().code;
           if (code != firebaseAccessCode) {
             toast.error("Invalid access code!", {
               position: "top-center",
@@ -36,8 +36,7 @@ function SignUp() {
           });
           return;
         }
-    
-        // Proceed with user signup if access code matches
+
         await createUserWithEmailAndPassword(auth, email, password);
         const user = auth.currentUser;
         console.log(user);

@@ -5,7 +5,7 @@ import AdminModule from '../components/AdminModule';
 const AdminDashboard = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [removeMode, setRemoveMode] = useState(false);
-  const dropdownRef = useRef(null); // Reference for dropdown container
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -13,10 +13,9 @@ const AdminDashboard = () => {
 
   const toggleRemoveMode = () => {
     setRemoveMode(!removeMode);
-    setDropdownVisible(false); // Close dropdown when mode toggled
+    setDropdownVisible(false);
   };
 
-  // Close dropdown if clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -25,15 +24,11 @@ const AdminDashboard = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Clean up the event listener on component unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownRef]);
 
-  // const handleClick = () => {
-  //   Navigate("/Admin/Dashboard/AddModule")
-  // }
   return (
     <div>
       <h1 className="text-3xl font-bold mb-8" style={{ marginTop: "2.5rem" }}>Dashboard</h1>

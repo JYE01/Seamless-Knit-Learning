@@ -1,11 +1,11 @@
 import React from 'react';
 
 const AddTopic = ({ showTopicModal, closeModal, handleAddTopic, newTitle, setNewTitle, newDescription, setNewDescription }) => {
-  if (!showTopicModal) return null; // Don't render the modal if `showModal` is false
+  if (!showTopicModal) return null;
 
   const handleClose = () => {
-    setNewTitle(''); // Reset title
-    setNewDescription(''); // Reset description
+    setNewTitle('');
+    setNewDescription('');
     closeModal();
   };
 

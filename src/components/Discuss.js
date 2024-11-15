@@ -16,8 +16,8 @@ const Discuss = () => {
   const [showVoteModal, setShowVoteModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [discussFilterOption, setDiscussFilterOption] = useState('All Discussions'); // For Discuss filtering
-  const [voteFilterOption, setVoteFilterOption] = useState('All Vote'); // For Vote filtering
+  const [discussFilterOption, setDiscussFilterOption] = useState('All Discussions');
+  const [voteFilterOption, setVoteFilterOption] = useState('All Vote');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [discussionToDelete, setDiscussionToDelete] = useState(null);
   const db = getFirestore(Firebase);
@@ -25,7 +25,7 @@ const Discuss = () => {
   const name = localStorage.getItem("Name");
   const email = localStorage.getItem("Email");
   const searchTerm = localStorage.getItem("searchTerm")?.toLowerCase() || '';
-  const [activeTab, setActiveTab] = useState("Discuss"); // Default active tab
+  const [activeTab, setActiveTab] = useState("Discuss");
   const [selectedVote, setSelectedVote] = useState(null); 
   const [showVote, setShowVote] = useState(false);
 
@@ -35,8 +35,6 @@ const Discuss = () => {
       const discussionsSnapShot = await getDocs(discussionsQuery);
       const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setDiscussions(discussionsData);
-
-      // Apply the filter
       filterDiscussions(discussionsData, discussFilterOption, searchTerm);
     };
     fetchData();
@@ -69,20 +67,17 @@ const Discuss = () => {
   const filterDiscussions = (data, discussFilterOption, searchTerm) => {
     let filtered = data;
 
-    // Apply searchTerm filtering
     if (searchTerm) {
       filtered = filtered.filter(discussion => 
         discussion.Title.toLowerCase().includes(searchTerm)
       );
     }
 
-    // Apply "My Discussions" filtering
     if (discussFilterOption === "My Discussion") {
       filtered = filtered.filter(discussion => discussion.PubEmail === email);
     }
 
-    // Set the filtered discussions
-    setFilteredDiscussions(filtered); // Corrected
+    setFilteredDiscussions(filtered);
   };
 
   const filterVotes = (data, voteFilterOption, searchTerm) => {
@@ -118,13 +113,10 @@ const Discuss = () => {
       position: "top-center",
     });
 
-    // Re-fetch discussions after adding a new topic
     const discussionsQuery = query(collection(db, 'Discussion'));
     const discussionsSnapShot = await getDocs(discussionsQuery);
     const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setDiscussions(discussionsData);
-
-    // Re-apply filtering after new topic addition
     filterDiscussions(discussionsData, discussFilterOption, searchTerm);
   };
 
@@ -149,13 +141,11 @@ const Discuss = () => {
       position: "top-center",
     });
 
-    // Re-fetch discussions after deletion
     const discussionsQuery = query(collection(db, 'Discussion'));
     const discussionsSnapShot = await getDocs(discussionsQuery);
     const discussionsData = discussionsSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setDiscussions(discussionsData);
 
-    // Re-apply filtering after deletion
     filterDiscussions(discussionsData, discussFilterOption, searchTerm);
 
     setShowDeleteModal(false);
@@ -299,7 +289,7 @@ const Discuss = () => {
         vote={selectedVote} 
         userEmail={email} 
         db={db} 
-        onVoteSubmit={fetchVotes} // Callback to refresh votes on submit
+        onVoteSubmit={fetchVotes}
       />
 
       {showDeleteModal && (

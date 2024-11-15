@@ -16,18 +16,15 @@ const Quiz = () => {
     const [completedQuizzes, setCompletedQuizzes] = useState([]);
     const db = getFirestore(Firebase);
     const navigate = useNavigate();
-    const userEmail = localStorage.getItem('Email'); // Get user email from localStorage
+    const userEmail = localStorage.getItem('Email');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch quiz list
                 const quizQuery = query(collection(db, 'Quizzes'));
                 const quizSnapShot = await getDocs(quizQuery);
                 const quizData = quizSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setQuizzes([...quizData]);
-
-                // Fetch user data by Email field
                 const userQuery = query(collection(db, 'Users'), where('Email', '==', userEmail));
                 const userSnapShot = await getDocs(userQuery);
 
@@ -36,12 +33,10 @@ const Quiz = () => {
                     return;
                 }
 
-                // Assuming the email is unique and there's only one document
                 const userDoc = userSnapShot.docs[0];
                 const userData = userDoc.data();
 
                 if (userData.Quiz) {
-                    // Store the completed quizzes as an array
                     const completedQuizzesList = Object.keys(userData.Quiz).filter(quiz => userData.Quiz[quiz]);
                     setCompletedQuizzes(completedQuizzesList);
                 }
@@ -54,7 +49,6 @@ const Quiz = () => {
     }, [db, userEmail]);
 
     const handleQuizClick = (quiz) => {
-        // Navigate to QuizPage and pass the quiz ID or name
         navigate(`/Main/QuizPage`, { state: { quiz } });
     };
 
@@ -65,14 +59,11 @@ const Quiz = () => {
             {quizzes.map((quiz, index) => (
               <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-md">
                 <div className="flex justify-between items-center">
-                  {/* Smaller text for mobile devices */}
                   <h2 className="text-sm lg:text-lg font-semibold mb-3">{quiz.Name}</h2>
                   
                   <div className="flex items-center">
-                    {/* Check if the quiz is completed */}
                     {completedQuizzes.includes(quiz.Name) && (
                       <div className="flex items-center mr-4">
-                          {/* Make Completed! text green on all screen sizes, only adjust font size */}
                           <span className="text-green-600 text-xs lg:text-sm font-bold">Completed!</span>
                           <svg className="w-4 h-4 lg:w-6 lg:h-6 text-green-600 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>

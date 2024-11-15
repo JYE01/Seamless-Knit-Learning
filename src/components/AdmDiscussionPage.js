@@ -66,12 +66,10 @@ const AdmDiscussionPage = () => {
       Reply: replyText
     };
 
-    // Add the new reply to the Response array using arrayUnion
     await updateDoc(discussionRef, {
       Response: arrayUnion(newReply)
     });
 
-    // Fetch the updated discussion data to reflect the new reply
     const discussionDoc = await getDoc(discussionRef);
     if (discussionDoc.exists()) {
       const updatedData = discussionDoc.data();
@@ -81,7 +79,6 @@ const AdmDiscussionPage = () => {
       }
     }
 
-    // Clear the reply area and hide it after submission
     setReplyText('');
     setShowReplyArea(false);
   };
@@ -94,12 +91,10 @@ const AdmDiscussionPage = () => {
   const handleDeleteReply = async () => {
     const discussionRef = doc(db, 'Discussion', titleID);
 
-    // Remove the selected reply from the Response array using arrayRemove
     await updateDoc(discussionRef, {
       Response: arrayRemove(replyToDelete)
     });
 
-    // Fetch the updated discussion data
     const discussionDoc = await getDoc(discussionRef);
     if (discussionDoc.exists()) {
       const updatedData = discussionDoc.data();
@@ -109,7 +104,7 @@ const AdmDiscussionPage = () => {
       }
     }
 
-    setShowDeleteModal(false); // Hide confirmation modal
+    setShowDeleteModal(false);
     toast.success("Reply deleted successfully!", {
       position: "top-center",
     });
@@ -202,7 +197,6 @@ const AdmDiscussionPage = () => {
             )}
           </div>
 
-          {/* Delete Confirmation Modal */}
           {showDeleteModal && (
             <div className="fixed z-10 inset-0 flex items-center justify-center">
               <div className="bg-white p-6 rounded-lg shadow-lg">

@@ -374,7 +374,7 @@ const AdmDiscuss = () => {
         vote={selectedVote} 
         userEmail={email} 
         db={db} 
-        onVoteSubmit={fetchVotes} // Callback to refresh votes on submit
+        onVoteSubmit={fetchVotes}
       />
 
       {showDeleteModal && (

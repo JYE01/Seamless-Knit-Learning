@@ -150,7 +150,6 @@ const Content = () => {
       <h2 className="text-2xl font-semibold mb-4">{subtopicContent.topicName}</h2>
       <div className="content" dangerouslySetInnerHTML={{ __html: subtopicContent.content }}></div>
 
-      {/* Display the progress */}
       <div className="progress-bar-container my-4">
         <div className="progress-bar" style={{ width: `${progress}%`, backgroundColor: '#4caf50', height: '8px' }}></div>
         <p className="text-gray-600 mt-2">Progress: {Math.round(progress)}%</p>

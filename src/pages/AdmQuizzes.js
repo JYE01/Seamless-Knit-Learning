@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 
 const AdmQuizzes = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [removeMode, setRemoveMode] = useState(false); // Track whether remove mode is active
-  const dropdownRef = useRef(null); // Reference for dropdown container
+  const [removeMode, setRemoveMode] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -13,10 +13,9 @@ const AdmQuizzes = () => {
 
   const toggleRemoveMode = () => {
     setRemoveMode(!removeMode);
-    setDropdownVisible(false); // Close dropdown when mode toggled
+    setDropdownVisible(false);
   };
 
-  // Close dropdown if clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -25,7 +24,6 @@ const AdmQuizzes = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Clean up the event listener on component unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };

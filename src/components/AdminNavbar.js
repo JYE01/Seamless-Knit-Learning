@@ -7,10 +7,10 @@ const AdminNavbar = () => {
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [navVisible, setNavVisible] = useState(false); // State to control sidebar visibility
+  const [navVisible, setNavVisible] = useState(false); 
   const location = useLocation();
-  const dropdownRef = useRef(null); // Reference for dropdown container
-  const navRef = useRef(null); // Reference for sidebar container
+  const dropdownRef = useRef(null);
+  const navRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,15 +58,13 @@ const AdminNavbar = () => {
   };
 
   return (
-    <div>
-      {/* Sidebar toggle button */}
+    <div> 
       {!navVisible && (
         <button className="toggle-button" onClick={toggleNav}>
           <i className="fas fa-bars text-2xl"></i>
         </button>
       )}
 
-      {/* Sidebar menu */}
       <div ref={navRef} className={`navbar ${navVisible ? 'navbar-visible' : ''}`}>
         <div className="relative account" ref={dropdownRef}>
           <button onClick={toggleDropdown} className="flex items-center gap-2" style={{ background: 'none' }}>
@@ -104,7 +102,7 @@ const AdminNavbar = () => {
                   className={`block text-lg cursor-pointer py-2 px-4 rounded-lg 
                     ${location.pathname === item.path ? 'bg-blue-500 text-white' : 'text-gray-700'}
                     hover:bg-blue-200`}
-                  onClick={() => setNavVisible(false)} // Close sidebar on link click
+                  onClick={() => setNavVisible(false)}
                 >
                   {item.name}
                 </Link>

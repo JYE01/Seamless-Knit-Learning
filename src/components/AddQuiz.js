@@ -9,36 +9,31 @@ const AddQuiz = () => {
   const db = getFirestore(Firebase); 
   const [quizName, setQuizName] = useState('');
   const [questions, setQuestions] = useState([]);
-  const [answersCount, setAnswersCount] = useState(3); // Default number of answers
+  const [answersCount, setAnswersCount] = useState(3);
   const navigate = useNavigate();
 
-  // Add a new question
   const handleAddQuestion = () => {
     setQuestions([...questions, { text: "", answers: Array(answersCount).fill({ text: "", correct: false }) }]);
   };
 
-  // Update question text
   const handleQuestionChange = (questionIndex, value) => {
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex].text = value;
     setQuestions(updatedQuestions);
   };
 
-  // Update answer text and correct value
   const handleAnswerChange = (questionIndex, answerIndex, value, isCorrect) => {
     const updatedQuestions = [...questions];
 
-    // Ensure the answer is updated with the provided text and/or correct flag
     updatedQuestions[questionIndex].answers[answerIndex] = {
-      ...updatedQuestions[questionIndex].answers[answerIndex], // Keep existing data
-      text: value !== undefined ? value : updatedQuestions[questionIndex].answers[answerIndex].text, // Update text if provided
-      correct: isCorrect !== undefined ? isCorrect : updatedQuestions[questionIndex].answers[answerIndex].correct, // Update correct flag if provided
+      ...updatedQuestions[questionIndex].answers[answerIndex], 
+      text: value !== undefined ? value : updatedQuestions[questionIndex].answers[answerIndex].text, 
+      correct: isCorrect !== undefined ? isCorrect : updatedQuestions[questionIndex].answers[answerIndex].correct,
     };
   
     setQuestions(updatedQuestions);
   };
 
-  // Save the quiz to Firestore
   const handleSaveQuiz = async () => {
     try {
       await addDoc(collection(db, 'Quizzes'), {
@@ -47,7 +42,7 @@ const AddQuiz = () => {
         Answer: questions.map(q =>
           q.answers.reduce((acc, answer) => {
             if (answer.text) {
-              acc[answer.text] = answer.correct; // Use answer text as key and correct as value
+              acc[answer.text] = answer.correct;
             }
             return acc;
           }, {})
@@ -66,7 +61,6 @@ const AddQuiz = () => {
     }
   };
 
-  // Navigate back to the quiz list
   const handleBack = async () => {
       navigate("/Admin/Quizzes");
   }
@@ -78,7 +72,6 @@ const AddQuiz = () => {
       </button>
       <h1 className="text-3xl font-bold mb-8 text-center">Add a New Quiz</h1>
 
-      {/* Quiz Name Input */}
       <div className="mb-4">
         <h3 className="text-xl font-semibold">Quiz Name</h3>
         <input
@@ -90,7 +83,6 @@ const AddQuiz = () => {
         />
       </div>
 
-      {/* Questions Section */}
       <div className="mb-4">
         {questions.map((question, questionIndex) => (
           <div key={questionIndex} className="mb-4">
@@ -103,7 +95,6 @@ const AddQuiz = () => {
               placeholder={`Enter question ${questionIndex + 1}`}
             />
 
-            {/* Answer Options */}
             <div>
               <div className="grid grid-cols-2 gap-4">
                 {question.answers.map((answer, answerIndex) => (
@@ -114,7 +105,7 @@ const AddQuiz = () => {
                       value={answer.text || ''}
                       placeholder={`Enter answer ${answerIndex + 1}`}
                       className="w-full p-2 mb-2 border border-gray-300 rounded-md"
-                      onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value, undefined)} // Only update text
+                      onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value, undefined)}
                     />
                    <div className="flex items-center">
                       <label className="inline-flex items-center">
@@ -148,7 +139,6 @@ const AddQuiz = () => {
         ))}
       </div>
 
-      {/* Add Question and Select Number of Answers */}
       <div className="mb-4 flex items-center space-x-4">
         <button
           onClick={handleAddQuestion}
@@ -167,7 +157,6 @@ const AddQuiz = () => {
         <label className="block text-gray-700 text-sm font-bold"># Number of Answers</label>
       </div>
 
-      {/* Save Quiz Button */}
       <button
         onClick={handleSaveQuiz}
         className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600"

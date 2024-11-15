@@ -19,21 +19,19 @@ const AdmQuiz = ({ removeMode }) => {
     const [quizzes, setQuizzes] = useState([]);
     const [completedQuizzes, setCompletedQuizzes] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [quizToDelete, setQuizToDelete] = useState(null); // To hold the quiz ID for deletion
+    const [quizToDelete, setQuizToDelete] = useState(null);
     const db = getFirestore(Firebase);
     const navigate = useNavigate();
-    const userEmail = localStorage.getItem('Email'); // Get user email from localStorage
+    const userEmail = localStorage.getItem('Email');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch quiz list
                 const quizQuery = query(collection(db, 'Quizzes'));
                 const quizSnapShot = await getDocs(quizQuery);
                 const quizData = quizSnapShot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setQuizzes([...quizData]);
 
-                // Fetch user data by Email field
                 const userQuery = query(collection(db, 'Users'), where('Email', '==', userEmail));
                 const userSnapShot = await getDocs(userQuery);
 
@@ -63,27 +61,20 @@ const AdmQuiz = ({ removeMode }) => {
         }
     };
 
-    // Show delete confirmation modal
     const handleDeleteClick = (quizId, quizName) => {
         setQuizToDelete({ id: quizId, name: quizName });
-        setShowDeleteModal(true); // Show the confirmation modal
+        setShowDeleteModal(true);
     };    
 
-    // Delete quiz after confirmation
     const handleDeleteQuiz = async () => {
         try {
-            // Delete the quiz from the "Quizzes" collection
             await deleteDoc(doc(db, 'Quizzes', quizToDelete.id));
-            setQuizzes(quizzes.filter(quiz => quiz.id !== quizToDelete.id)); // Update UI after deletion
-    
-            // Delete the quiz progress from each user's "Quiz" field
+            setQuizzes(quizzes.filter(quiz => quiz.id !== quizToDelete.id)); 
             const usersCollection = collection(db, 'Users');
             const userDocs = await getDocs(usersCollection);
     
             userDocs.forEach(async (userDoc) => {
                 const userRef = doc(db, 'Users', userDoc.id);
-    
-                // Use the quiz name to delete the specific quiz progress field in "Quiz"
                 await updateDoc(userRef, {
                     [`Quiz.${quizToDelete.name}`]: deleteField(),
                 });
@@ -93,8 +84,8 @@ const AdmQuiz = ({ removeMode }) => {
                 position: "top-center",
             });
     
-            setShowDeleteModal(false); // Close the modal
-            setQuizToDelete(null); // Reset quizToDelete
+            setShowDeleteModal(false);
+            setQuizToDelete(null);
         } catch (error) {
             console.error("Error deleting quiz: ", error);
             toast.error("Error deleting quiz!", {
@@ -115,7 +106,6 @@ const AdmQuiz = ({ removeMode }) => {
                   <h2 className="text-sm lg:text-lg font-semibold mb-3">{quiz.Name}</h2>
                   
                   <div className="flex items-center">
-                    {/* Check if the quiz is completed */}
                     {completedQuizzes.includes(quiz.Name) && (
                       <div className="flex items-center mr-4">
                           <span className="text-green-600 text-xs lg:text-sm font-bold">Completed!</span>
@@ -125,10 +115,9 @@ const AdmQuiz = ({ removeMode }) => {
                       </div>
                     )}
 
-                    {/* If removeMode is active, show 🗑️ icon for deleting */}
                     {removeMode ? (
                       <button 
-                        onClick={() => handleDeleteClick(quiz.id, quiz.Name)} // Show delete confirmation
+                        onClick={() => handleDeleteClick(quiz.id, quiz.Name)}
                         className="text-red-600 transition-all ml-4 hover:scale-125 hover:text-red-800 transform duration-200"
                         style={{
                             fontSize: '1.2rem',
@@ -150,7 +139,6 @@ const AdmQuiz = ({ removeMode }) => {
               </div>
             ))}
 
-            {/* Delete Confirmation Modal */}
             {showDeleteModal && (
                 <div className="fixed z-10 inset-0 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -159,13 +147,13 @@ const AdmQuiz = ({ removeMode }) => {
                         <div className="mt-6 flex justify-end space-x-4">
                             <button
                                 className="bg-gray-300 px-4 py-2 rounded-lg"
-                                onClick={() => setShowDeleteModal(false)} // Close the modal
+                                onClick={() => setShowDeleteModal(false)}
                             >
                                 Cancel
                             </button>
                             <button
                                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-all"
-                                onClick={handleDeleteQuiz} // Confirm delete
+                                onClick={handleDeleteQuiz}
                             >
                                 Delete
                             </button>

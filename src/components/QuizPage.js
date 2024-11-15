@@ -9,7 +9,7 @@ const QuizPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const db = getFirestore(Firebase);
-    const quiz = location.state.quiz; // passed from previous page
+    const quiz = location.state.quiz;
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswerKeys] = useState([]);
     const [userAnswers, setUserAnswers] = useState({});
@@ -34,7 +34,7 @@ const QuizPage = () => {
     const handleAnswerChange = (questionIndex, answerIndex) => {
         setUserAnswers({
             ...userAnswers,
-            [questionIndex]: answerIndex,  // Storing the selected answer index
+            [questionIndex]: answerIndex,
         });
     };
 
@@ -55,19 +55,17 @@ const QuizPage = () => {
 
         let calculatedScore = 0;
 
-        // Calculate score based on selected answers
         questions.forEach((question, index) => {
-            const selectedAnswerIndex = userAnswers[index];  // User's selected answer
+            const selectedAnswerIndex = userAnswers[index];
             if (selectedAnswerIndex !== undefined && answers[index][selectedAnswerIndex] === true) {
                 calculatedScore += 1;
             }
         });
 
-        setScore(calculatedScore);  // Update the score
-        setSubmitted(true); // Mark quiz as submitted
+        setScore(calculatedScore);
+        setSubmitted(true);
 
         try {
-            // Query the Users collection to find the document where Email field matches userEmail
             const usersRef = collection(db, 'Users');
             const emailQuery = query(usersRef, where("Email", "==", userEmail));
             const querySnapshot = await getDocs(emailQuery);
@@ -77,13 +75,11 @@ const QuizPage = () => {
                 return;
             }
 
-            // Assuming only one document matches the email
             const userDoc = querySnapshot.docs[0];
             const userDocRef = doc(db, 'Users', userDoc.id);
 
-            // Update or create the Quiz field for the user
             await updateDoc(userDocRef, {
-                [`Quiz.${quiz.Name}`]: true,  // update this quiz status as completed
+                [`Quiz.${quiz.Name}`]: true,
             });
             toast.success("Quiz completion status updated!", {
                 position: "top-center",
@@ -108,7 +104,6 @@ const QuizPage = () => {
         <div className="p-6 bg-white shadow rounded-lg" style={{marginTop:'2.5rem'}}>
             <h1 className="text-2xl font-bold mb-6">{quiz.Name}</h1>
 
-            {/* Always maintain max height and allow scrolling */}
             <div className="overflow-y-auto max-h-[500px]">
                 {questions.map((question, questionIndex) => (
                     <div key={questionIndex} className="mb-6 p-4 bg-gray-100 rounded-lg shadow-md">
@@ -126,16 +121,15 @@ const QuizPage = () => {
                                     value={answerKey}
                                     onChange={() => handleAnswerChange(questionIndex, answerKey)}
                                     checked={userAnswers[questionIndex] === answerKey}
-                                    disabled={submitted} // Disable input after submission
+                                    disabled={submitted}
                                     className="mr-2"
                                 />
                                 <label htmlFor={`q${questionIndex}a${answerIndex}`} className="mr-2">
-                                    {answerKey} {/* Rendering the answer key */}
+                                    {answerKey}
                                 </label>
                                 
                                 {submitted && (
                                     <>
-                                        {/* If user selects the correct answer */}
                                         {userAnswers[questionIndex] === answerKey && isCorrect && (
                                             <span className="ml-2 text-green-500">
                                                 <div className="bg-green-100 text-green-700 px-2 py-1 rounded inline-block">
@@ -144,7 +138,6 @@ const QuizPage = () => {
                                             </span>
                                         )}
 
-                                        {/* If user selects the wrong answer */}
                                         {userAnswers[questionIndex] === answerKey && !isCorrect && (
                                             <span className="ml-2 text-red-500">
                                                 <div className="bg-red-100 text-red-700 px-2 py-1 rounded inline-block">
@@ -153,7 +146,6 @@ const QuizPage = () => {
                                             </span>
                                         )}
 
-                                        {/* Show the correct answer if it's not selected by the user */}
                                         {userAnswers[questionIndex] !== answerKey && isCorrect && (
                                             <span className="ml-2 text-green-500">
                                                 <div className="bg-green-100 text-green-700 px-2 py-1 rounded inline-block">
@@ -169,7 +161,6 @@ const QuizPage = () => {
                 ))}
             </div>
 
-            {/* Conditionally render the Back button */}
             <button
                 onClick={handleBack}
                 className="px-4 py-2 bg-gray-500 text-white rounded mt-4 mr-2"
@@ -177,7 +168,6 @@ const QuizPage = () => {
                 Back
             </button>
 
-            {/* Conditionally render the Submit button or the score */}
             {!submitted ? (
                 <button
                     onClick={handleSubmit}
